@@ -483,7 +483,7 @@
                     </div>
                     <div class="form-group">
                         <label for="medidas">Medidas do Cabeçote (cm) (CxLxA)</label>
-                        <input type="text" id="medidas" placeholder="Ex: 45x55x71 cm">
+                        <input type="text" id="medidas" placeholder="Ex: 45x55x71">
                     </div>
                 </div>
 
@@ -500,7 +500,7 @@
                     </div>
                     <div class="form-group">
                         <label for="medidasMesa">Medidas da Mesa (cm) (CxLxA)</label>
-                        <input type="text" id="medidasMesa" placeholder="Ex: 120x55x75 cm">
+                        <input type="text" id="medidasMesa" placeholder="Ex: 120x70x15">
                     </div>
                 </div>
 
@@ -517,7 +517,7 @@
                     </div>
                     <div class="form-group">
                         <label for="medidasMotor">Medidas do Motor (cm) (CxLxA)</label>
-                        <input type="text" id="medidasMotor" placeholder="Ex: 30x20x20 cm">
+                        <input type="text" id="medidasMotor" placeholder="Ex: 15x15x20">
                     </div>
                 </div>
 
@@ -572,6 +572,15 @@
         if (!val) return 0;
         const cleaned = val.toString().replace(',', '.');
         return parseFloat(cleaned) || 0;
+    }
+
+    function formatarMedida(medidaStr) {
+        if (!medidaStr || !medidaStr.trim()) return '';
+        let str = medidaStr.trim();
+        if (!/cm$/i.test(str)) {
+            str += ' Cm';
+        }
+        return str;
     }
 
     function calcularPesoUnitarioTotal(item) {
@@ -841,15 +850,18 @@
             
             // 1. CABEÇOTE (Medida + Peso)
             let maqDetalhes = [];
-            if (item.medidas && item.medidas.trim() !== '') maqDetalhes.push(item.medidas.trim());
+            if (item.medidas && item.medidas.trim() !== '') {
+                maqDetalhes.push(formatarMedida(item.medidas));
+            }
             if (parseNum(item.peso) > 0) maqDetalhes.push(`${Number(item.peso).toFixed(2)} Kg`);
             let strMaq = maqDetalhes.length > 0 ? `<strong>Cab.:</strong> ${maqDetalhes.join(' - ')}` : '';
 
             // 2. MESA (Nome/Medida + Peso)
             let mesaDetalhes = [];
-            let mesaInfo = item.mesa || '';
+            let mesaInfo = item.mesa ? item.mesa.trim() : '';
             if (item.medidasMesa && item.medidasMesa.trim() !== '') {
-                mesaInfo += mesaInfo ? ` (${item.medidasMesa.trim()})` : item.medidasMesa.trim();
+                let medM = formatarMedida(item.medidasMesa);
+                mesaInfo += mesaInfo ? ` ${medM}` : medM;
             }
             if (mesaInfo) mesaDetalhes.push(mesaInfo);
             if (parseNum(item.pesoMesa) > 0) mesaDetalhes.push(`${Number(item.pesoMesa).toFixed(2)} Kg`);
@@ -857,9 +869,10 @@
 
             // 3. MOTOR (Tipo/Medida + Peso)
             let motorDetalhes = [];
-            let motorInfo = item.motor || '';
+            let motorInfo = item.motor ? item.motor.trim() : '';
             if (item.medidasMotor && item.medidasMotor.trim() !== '') {
-                motorInfo += motorInfo ? ` (${item.medidasMotor.trim()})` : item.medidasMotor.trim();
+                let medMot = formatarMedida(item.medidasMotor);
+                motorInfo += motorInfo ? ` ${medMot}` : medMot;
             }
             if (motorInfo) motorDetalhes.push(motorInfo);
             if (parseNum(item.pesoMotor) > 0) motorDetalhes.push(`${Number(item.pesoMotor).toFixed(2)} Kg`);
@@ -918,7 +931,7 @@
                 <tr>
                     <td><strong>${m.marca}</strong></td>
                     <td>${m.modelo}</td>
-                    <td>${m.medidas || '-'}</td>
+                    <td>${m.medidas ? formatarMedida(m.medidas) : '-'}</td>
                     <td>${m.vol || '-'}</td>
                     <td><strong>${Number(pesoTotalUnitario).toFixed(2)} Kg</strong></td>
                     <td class="col-acoes">
