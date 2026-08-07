@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatorio de Carga</title>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        body { 
+            background: #0c101c url('fundo.png') no-repeat center top fixed;
+            background-size: cover;
+            margin: 0; 
+            padding: 20px; 
+            color: #ffffff; 
+        }
+
+        .container { 
+            max-width: 1200px; 
+            margin: 160px auto 0 auto; 
+            background: transparent; 
+            padding: 25px; 
+        }
+        
+        .header-bar { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2); 
+            padding-bottom: 15px; 
+            margin-bottom: 15px; 
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        h1 { color: #ffffff; margin: 0; font-size: 24px; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
+        h2 { color: #ffffff; font-size: 18px; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
+        
+        .btn-nav { background-color: #0d9488; color: white; border: none; padding: 10px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 14px; transition: 0.2s; display: inline-flex; align-items: center; gap: 6px; }
+        .btn-nav:hover { background-color: #0f766e; }
+        .btn-nav-alt { background-color: #2563eb; }
+        .btn-nav-alt:hover { background-color: #1d4ed8; }
+
+        .btn-sync {
+            background-color: #0284c7;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .btn-sync:hover { background-color: #0369a1; }
+
+        p.subtitle { color: #e2e8f0; font-size: 14px; margin-top: 5px; margin-bottom: 20px; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
+        
+        .form-container {
+            background: rgba(10, 15, 30, 0.75); 
+            backdrop-filter: blur(8px);
+            padding: 25px; 
+            border-radius: 8px; 
+            border: 1px solid rgba(255, 255, 255, 0.15); 
+            margin-bottom: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .form-divider {
+            font-size: 13px;
+            font-weight: 700;
+            color: #38bdf8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid rgba(56, 189, 248, 0.25);
+            padding-bottom: 4px;
+            margin-top: 5px;
+            margin-bottom: -5px;
+        }
+
+        .form-row {
+            display: grid;
+            gap: 15px;
+            width: 100%;
+        }
+
+        .row-2-cols { grid-template-columns: 1fr 1fr; }
+        .row-3-cols { grid-template-columns: 1fr 1fr 1fr; }
+        .row-1-col  { grid-template-columns: 1fr; }
+
+        @media (max-width: 768px) {
+            .row-2-cols, .row-3-cols { grid-template-columns: 1fr; }
+        }
+
+        .form-grid-calc { 
+            display: grid; 
+            grid-template-columns: 2fr 1fr auto; 
+            gap: 12px; 
+            margin-bottom: 25px; 
+            align-items: end; 
+            background: rgba(10, 15, 30, 0.75); 
+            backdrop-filter: blur(8px);
+            padding: 15px; 
+            border-radius: 8px; 
+            border: 1px solid rgba(255, 255, 255, 0.15); 
+        }
+
+        .form-group { display: flex; flex-direction: column; }
+        label { font-size: 13px; font-weight: 600; color: #f8fafc; margin-bottom: 5px; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
+        
+        input, select, textarea { 
+            padding: 10px; 
+            background-color: #ffffff; 
+            color: #0f172a; 
+            border: 1px solid #cbd5e1; 
+            border-radius: 6px; 
+            font-size: 14px; 
+            width: 100%; 
+        }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: #3b82f6; }
+        
+        .actions-bar { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px; border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 15px; }
+        button { padding: 10px 18px; border-radius: 6px; font-weight: bold; cursor: pointer; border: none; font-size: 14px; transition: 0.2s; }
+        .btn-add { background-color: #2563eb; color: white; }
+        .btn-add:hover { background-color: #1d4ed8; }
+        .btn-export { background-color: #16a34a; color: white; }
+        .btn-export:hover { background-color: #15803d; }
+        .btn-clear-sec { background-color: #64748b; color: white; margin-bottom: 15px; float: right; }
+        
+        .btn-edit-sm { 
+            background-color: #f59e0b; 
+            color: white; 
+            padding: 6px 12px; 
+            font-size: 12px; 
+            border-radius: 4px; 
+            border: none; 
+            cursor: pointer; 
+            margin-right: 4px; 
+        }
+        .btn-edit-sm:hover { background-color: #d97706; }
+
+        .btn-danger-sm { 
+            background-color: #ef4444; 
+            color: white; 
+            padding: 6px 12px; 
+            font-size: 12px; 
+            border-radius: 4px; 
+            border: none; 
+            cursor: pointer; 
+        }
+        .btn-danger-sm:hover { background-color: #dc2626; }
+        
+        .btn-cancel { background-color: #64748b; color: white; display: none; }
+
+        .table-responsive-container {
+            width: 100%;
+            overflow: visible; 
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            margin-top: 10px;
+            background: rgba(10, 15, 30, 0.8);
+            backdrop-filter: blur(8px);
+        }
+
+        table { width: 100%; border-collapse: collapse; font-size: 13px; color: #f8fafc; table-layout: fixed; }
+        
+        th, td { 
+            border: 1px solid rgba(255, 255, 255, 0.15); 
+            padding: 10px 8px; 
+            text-align: center; 
+            vertical-align: middle; 
+            position: relative; 
+            word-wrap: break-word;
+        }
+
+        th { background-color: rgba(30, 41, 59, 0.9); color: #38bdf8; font-weight: 700; position: sticky; top: 0; z-index: 1; }
+        tr:nth-child(even) { background-color: rgba(255, 255, 255, 0.05); }
+        
+        .col-qtd { width: 60px; }
+        .col-marca { width: 130px; }
+        .col-modelo { width: 220px; }
+        .col-vol-unit { width: 90px; }
+        .col-peso-unit { width: 150px; }
+        .col-peso-vol-tot { width: 180px; }
+        .col-acoes { width: 100px; }
+
+        .total-box { 
+            background: rgba(10, 15, 30, 0.85); 
+            backdrop-filter: blur(8px);
+            border: 1px solid #3b82f6; 
+            color: #60a5fa; 
+            padding: 15px; 
+            border-radius: 8px; 
+            margin-top: 20px; 
+            font-size: 18px; 
+            font-weight: bold; 
+            text-align: right; 
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* BALÃO INFORMATIVO (TOOLTIP NA TELA) */
+        .info-tooltip-container { 
+            position: relative; 
+            display: inline-flex; 
+            align-items: center;
+            justify-content: center;
+            cursor: pointer; 
+        }
+
+        .star-highlight {
+            color: #ef4444;
+            font-weight: 900;
+            font-size: 18px;
+            margin-left: 4px;
+            display: inline-block;
+            transition: transform 0.2s ease;
+        }
+
+        .info-tooltip-container:hover .star-highlight { transform: scale(1.4); color: #f87171; }
+
+        .info-tooltip-text {
+            visibility: hidden;
+            width: 320px;
+            background-color: #090d16;
+            color: #ffffff;
+            text-align: left;
+            border-radius: 8px;
+            padding: 12px 14px;
+            position: absolute;
+            z-index: 9999;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+            font-size: 12px;
+            font-weight: normal;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.95);
+            line-height: 1.5;
+            pointer-events: none;
+            white-space: normal;
+            border: 1px solid #38bdf8;
+            word-wrap: break-word;
+        }
+
+        .info-tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 7px;
+            border-style: solid;
+            border-color: #090d16 transparent transparent transparent;
+        }
+
+        .info-tooltip-container:hover .info-tooltip-text { visibility: visible; opacity: 1; }
+
+        .print-info-inline { display: none; }
+        .print-header { display: none; }
+
+        .page-view { display: none; }
+        .page-view.active { display: block; }
+
+        #syncContainer { display: inline-flex; align-items: center; gap: 8px; margin-left: 10px; }
+        #loadingStatus { font-size: 13px; color: #38bdf8; font-weight: bold; }
+
+        /* REGRAS DE IMPRESSÃO / SALVAR PDF */
+        @media print { 
+            @page { 
+                margin: 10mm; 
+                size: auto; 
+            }
+            
+            body { 
+                background: white !important; 
+                padding: 0 !important; 
+                color: #000000 !important; 
+            } 
+            
+            .container { 
+                margin-top: 0 !important; 
+                box-shadow: none !important; 
+                padding: 0 !important; 
+                background: white !important; 
+                max-width: 100% !important; 
+            } 
+            
+            .form-grid-calc, .btn-clear-sec, .btn-danger-sm, .btn-edit-sm, .btn-nav, p.subtitle, .header-bar, #syncContainer, .col-acoes { 
+                display: none !important; 
+            } 
+            
+            .print-header {
+                display: flex !important;
+                justify-content: space-between;
+                align-items: center;
+                border-bottom: 2px solid #222;
+                padding-bottom: 12px;
+                margin-bottom: 20px;
+            }
+
+            .print-header img {
+                max-height: 55px;
+                width: auto;
+            }
+
+            .print-header-title {
+                text-align: right;
+            }
+
+            .print-header-title h1 {
+                color: #000 !important;
+                font-size: 20px !important;
+                margin: 0;
+                text-shadow: none !important;
+            }
+
+            .print-header-title p {
+                margin: 3px 0 0 0;
+                font-size: 11px;
+                color: #444;
+            }
+
+            h2 { color: #000 !important; text-shadow: none !important; font-size: 16px !important; margin-bottom: 10px !important; }
+
+            .table-responsive-container {
+                border: none !important;
+                background: white !important;
+            }
+
+            table { border-collapse: collapse !important; width: 100% !important; color: #000 !important; }
+            th, td { border: 1px solid #000 !important; color: #000 !important; padding: 8px 6px !important; font-size: 12px !important; }
+            th { background-color: #f1f5f9 !important; color: #000 !important; }
+            tr:nth-child(even) { background-color: #fafafa !important; }
+
+            .star-highlight { display: none !important; }
+            .info-tooltip-text { display: none !important; }
+
+            /* BLOCO DE DETALHES VISÍVEL NA IMPRESSÃO */
+            .print-info-inline {
+                display: block !important;
+                font-size: 11px !important;
+                color: #222222 !important;
+                margin-top: 5px !important;
+                line-height: 1.4 !important;
+                background-color: #f8fafc;
+                padding: 6px 8px;
+                border-radius: 4px;
+                border: 1px dashed #94a3b8;
+                text-align: left;
+            }
+
+            .total-box { 
+                background: #ffffff !important; 
+                color: #000000 !important; 
+                border: 2px solid #000000 !important; 
+                text-shadow: none !important;
+                font-size: 15px !important;
+                padding: 12px !important;
+                margin-top: 15px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- CABEÇALHO OFICIAL DE IMPRESSÃO COM LOGO -->
+    <div class="print-header">
+        <img src="logo.png" alt="Andrade Máquinas Ltd.">
+        <div class="print-header-title">
+            <h1>Relatório de Carga e Medidas</h1>
+            <p>Andrade Máquinas Ltda.</p>
+        </div>
+    </div>
+    
+    <!-- TELA PRINCIPAL: CALCULADORA -->
+    <div id="telaCalculadora" class="page-view active">
+        <div class="header-bar">
+            <h1>Calculadora de medidas de maquina</h1>
+            <button class="btn-nav" onclick="alternarTela('telaCadastro')">⚙️ Adicionar / Gerenciar Máquinas</button>
+        </div>
+        
+        <p class="subtitle">Pesquise o modelo, selecione a quantidade e gere o relatório completo de peso e Vol TOTAL.</p>
+
+        <div class="form-grid-calc">
+            <div class="form-group">
+                <label for="search">
+                    Pesquisar Modelo de Máquina: 
+                    <span id="syncContainer">
+                        <span id="loadingStatus">🔄 Conectando ao Drive...</span>
+                        <button type="button" class="btn-sync" onclick="carregarDadosDrive()">🔄 Atualizar</button>
+                    </span>
+                </label>
+                <input type="text" id="search" placeholder="Digite para buscar (ex: SA-430D, Siruba...)" oninput="filtrarModelos()">
+                <select id="modeloSelect" size="4" style="margin-top: 5px; height: 90px;"></select>
+            </div>
+            <div class="form-group">
+                <label for="qtd">Quantidade:</label>
+                <input type="number" id="qtd" value="1" min="1" style="height: 40px;">
+            </div>
+            <div class="form-group">
+                <button class="btn-add" style="height: 40px;" onclick="adicionarItemCarga()">+ Adicionar Carga</button>
+            </div>
+        </div>
+
+        <div>
+            <button class="btn-clear-sec" onclick="limparListaCarga()">🗑️ Limpar Lista</button>
+            <button class="btn-clear-sec" style="background-color: #16a34a; margin-right: 10px;" onclick="window.print()">🖨️ Imprimir / Salvar PDF</button>
+            <h2>📦 Lista de Carga Selecionada</h2>
+        </div>
+
+        <div class="table-responsive-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="col-qtd">Qtd</th>
+                        <th class="col-marca">Marca / Origem</th>
+                        <th class="col-modelo">Modelo</th>
+                        <th class="col-vol-unit">VOL Unit.</th>
+                        <th class="col-peso-unit">Peso Unit. Total (Kg)</th>
+                        <th class="col-peso-vol-tot">Peso (Kg) / Vol TOTAL</th>
+                        <th class="col-acoes">Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="corpoTabelaCarga">
+                    <tr>
+                        <td colspan="7" style="text-align: center; color: #cbd5e1;">Nenhum item adicionado à lista.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="total-box" id="caixaTotal">
+            Total de Máquinas: 0 un | Total VOL: 0 | Peso Total da Carga: 0.00 Kg
+        </div>
+    </div>
+
+    <!-- TELA SECUNDÁRIA: CADASTRO -->
+    <div id="telaCadastro" class="page-view">
+        <div class="header-bar">
+            <h1>⚙️ Cadastro de Banco de Dados (Google Drive)</h1>
+            <button class="btn-nav btn-nav-alt" onclick="alternarTela('telaCalculadora')">⬅️ Voltar para Calculadora</button>
+        </div>
+        <p class="subtitle">As alterações feitas aqui serão salvas diretamente na sua Planilha do Google Drive.</p>
+
+        <form id="formMaquina" onsubmit="salvarMaquina(event)">
+            <input type="hidden" id="editIndex" value="-1">
+
+            <div class="form-container">
+                <!-- LINHA 1: Marca e VOL -->
+                <div class="form-divider">🏷️ Identificação & Volume</div>
+                <div class="form-row row-2-cols">
+                    <div class="form-group">
+                        <label for="marca">Marca / Origem *</label>
+                        <input type="text" id="marca" placeholder="Ex: Siruba, Elgin..." required>
+                    </div>
+                    <div class="form-group">
+                        <label for="vol">VOL (Quantidade de Volumes) *</label>
+                        <input type="number" id="vol" placeholder="Ex: 1, 2, 3..." min="1" step="1" required>
+                    </div>
+                </div>
+
+                <!-- LINHA 2: Cabeçote / Máquina -->
+                <div class="form-divider">📌 Dados do Cabeçote / Máquina</div>
+                <div class="form-row row-3-cols">
+                    <div class="form-group">
+                        <label for="modelo">Modelo da Máquina *</label>
+                        <input type="text" id="modelo" placeholder="Ex: SA-430D-01 (NSA004)" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="peso">Peso do Cabeçote (Kg) *</label>
+                        <input type="text" id="peso" placeholder="Ex: 110.0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="medidas">Medidas do Cabeçote (cm) (CxLxA)</label>
+                        <input type="text" id="medidas" placeholder="Ex: 45x55x71 cm">
+                    </div>
+                </div>
+
+                <!-- LINHA 3: Mesa -->
+                <div class="form-divider">📐 Dados da Mesa</div>
+                <div class="form-row row-3-cols">
+                    <div class="form-group">
+                        <label for="mesa">Modelo/Tipo da Mesa</label>
+                        <input type="text" id="mesa" placeholder="Ex: Normal, Stand...">
+                    </div>
+                    <div class="form-group">
+                        <label for="pesoMesa">Peso da Mesa (Kg)</label>
+                        <input type="text" id="pesoMesa" placeholder="Ex: 15.0">
+                    </div>
+                    <div class="form-group">
+                        <label for="medidasMesa">Medidas da Mesa (cm) (CxLxA)</label>
+                        <input type="text" id="medidasMesa" placeholder="Ex: 120x55x75 cm">
+                    </div>
+                </div>
+
+                <!-- LINHA 4: Motor -->
+                <div class="form-divider">⚡ Dados do Motor</div>
+                <div class="form-row row-3-cols">
+                    <div class="form-group">
+                        <label for="motor">Motor</label>
+                        <input type="text" id="motor" placeholder="Ex: Convencional, Direct Drive...">
+                    </div>
+                    <div class="form-group">
+                        <label for="pesoMotor">Peso do Motor (Kg)</label>
+                        <input type="text" id="pesoMotor" placeholder="Ex: 20.0">
+                    </div>
+                    <div class="form-group">
+                        <label for="medidasMotor">Medidas do Motor (cm) (CxLxA)</label>
+                        <input type="text" id="medidasMotor" placeholder="Ex: 30x20x20 cm">
+                    </div>
+                </div>
+
+                <!-- LINHA 5: Inf. Add -->
+                <div class="form-divider">📝 Informações Adicionais</div>
+                <div class="form-row row-1-col">
+                    <div class="form-group">
+                        <label for="infoAdd">Observações (Obs.)</label>
+                        <input type="text" id="infoAdd" placeholder="Ex: Acompanha box fora da caixa (31/08/2020)">
+                    </div>
+                </div>
+
+                <div class="actions-bar">
+                    <button type="submit" class="btn-add" id="btnSalvar">➕ Cadastrar no Google Drive</button>
+                    <button type="button" class="btn-cancel" id="btnCancelarEdicao" onclick="cancelarEdicao()">❌ Cancelar Edição</button>
+                    <button type="button" class="btn-export" onclick="exportarExcelBackup()">📥 Baixar Backup (Excel)</button>
+                </div>
+            </div>
+        </form>
+
+        <h2>📋 Máquinas na Planilha (<span id="totalContador">0</span>)</h2>
+        
+        <div class="table-responsive-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 130px;">Marca / Origem</th>
+                        <th style="width: 200px;">Modelo</th>
+                        <th style="width: 180px;">Medidas (Cab)</th>
+                        <th style="width: 90px;">VOL</th>
+                        <th style="width: 180px;">Peso Total (Cab+Mesa+Motor) (Kg)</th>
+                        <th class="col-acoes">Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="corpoTabelaCadastro">
+                    <tr>
+                        <td colspan="6" style="text-align: center; color: #cbd5e1;">Carregando banco do Google Drive...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    const URL_GOOGLE_SCRIPT = "https://script.google.com/macros/s/AKfycbxTN_-U6qorXAx653kF4uKcfsKp5nmyWGMnltho1iqavrGy_czmWriCAH40oAQT_VuW/exec";
+
+    let bancoDados = [];
+    let listaCarga = [];
+
+    function parseNum(val) {
+        if (!val) return 0;
+        const cleaned = val.toString().replace(',', '.');
+        return parseFloat(cleaned) || 0;
+    }
+
+    function calcularPesoUnitarioTotal(item) {
+        return parseNum(item.peso) + parseNum(item.pesoMesa) + parseNum(item.pesoMotor);
+    }
+
+    function extrairNumeroVol(volTexto) {
+        if (!volTexto) return 0;
+        const tratado = String(volTexto).replace(',', '.');
+        const match = tratado.match(/[-+]?[0-9]+/);
+        return match ? parseInt(match[0], 10) : 0;
+    }
+
+    function callbackCarregarDados(data) {
+        const status = document.getElementById('loadingStatus');
+        if (data && Array.isArray(data)) {
+            bancoDados = data;
+            if (status) {
+                status.innerText = '✅ Sincronizado com Drive';
+                status.style.color = '#4ade80';
+            }
+            carregarSelectCalculadora(bancoDados);
+            atualizarTabelaCadastro();
+        } else {
+            if (status) {
+                status.innerText = '⚠️ Reagendando sincronização...';
+                status.style.color = '#f59e0b';
+            }
+            setTimeout(carregarDadosDrive, 1500);
+        }
+    }
+
+    function carregarDadosDrive() {
+        const status = document.getElementById('loadingStatus');
+        if (status) {
+            status.innerText = '🔄 Sincronizando...';
+            status.style.color = '#38bdf8';
+        }
+
+        const scriptAntigo = document.getElementById('jsonpScript');
+        if (scriptAntigo) scriptAntigo.remove();
+
+        const script = document.createElement('script');
+        script.id = 'jsonpScript';
+        script.src = `${URL_GOOGLE_SCRIPT}?callback=callbackCarregarDados&t=${Date.now()}`;
+        script.onerror = function() {
+            if (status) {
+                status.innerText = '❌ Erro ao sincronizar';
+                status.style.color = '#ef4444';
+            }
+        };
+        document.body.appendChild(script);
+    }
+
+    async function salvarMaquina(e) {
+        e.preventDefault();
+        const editIndex = parseInt(document.getElementById('editIndex').value);
+        const btn = document.getElementById('btnSalvar');
+
+        const maquinaDados = {
+            marca: document.getElementById('marca').value.trim(),
+            modelo: document.getElementById('modelo').value.trim(),
+            peso: parseNum(document.getElementById('peso').value),
+            medidas: document.getElementById('medidas').value.trim(),
+            mesa: document.getElementById('mesa').value.trim(),
+            pesoMesa: parseNum(document.getElementById('pesoMesa').value),
+            medidasMesa: document.getElementById('medidasMesa').value.trim(),
+            motor: document.getElementById('motor').value.trim(),
+            pesoMotor: parseNum(document.getElementById('pesoMotor').value),
+            medidasMotor: document.getElementById('medidasMotor').value.trim(),
+            vol: parseInt(document.getElementById('vol').value, 10) || 1,
+            infoAdd: document.getElementById('infoAdd').value.trim()
+        };
+
+        btn.disabled = true;
+
+        if (editIndex >= 0) {
+            btn.innerText = '⏳ Atualizando...';
+            const rowIndex = editIndex + 1;
+            
+            const script = document.createElement('script');
+            const dataStr = encodeURIComponent(JSON.stringify(maquinaDados));
+            script.src = `${URL_GOOGLE_SCRIPT}?action=edit&rowIndex=${rowIndex}&data=${dataStr}&callback=callbackCarregarDados&t=${Date.now()}`;
+            document.body.appendChild(script);
+
+            alert('Edição gravada! A lista será sincronizada.');
+            cancelarEdicao();
+        } else {
+            btn.innerText = '⏳ Salvando na Planilha...';
+            try {
+                await fetch(URL_GOOGLE_SCRIPT, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(maquinaDados)
+                });
+                document.getElementById('formMaquina').reset();
+                alert('Máquina enviada com sucesso!');
+                setTimeout(carregarDadosDrive, 1500);
+            } catch (err) {
+                alert('Erro ao salvar no Google Drive: ' + err.message);
+            }
+        }
+
+        btn.disabled = false;
+        if (editIndex < 0) btn.innerText = '➕ Cadastrar no Google Drive';
+    }
+
+    function editarMaquina(index) {
+        const item = bancoDados[index];
+        if (!item) return;
+
+        document.getElementById('editIndex').value = index;
+        document.getElementById('marca').value = item.marca || '';
+        document.getElementById('modelo').value = item.modelo || '';
+        document.getElementById('peso').value = item.peso || 0;
+        document.getElementById('medidas').value = item.medidas || '';
+        document.getElementById('mesa').value = item.mesa || '';
+        document.getElementById('pesoMesa').value = item.pesoMesa || 0;
+        document.getElementById('medidasMesa').value = item.medidasMesa || '';
+        document.getElementById('motor').value = item.motor || '';
+        document.getElementById('pesoMotor').value = item.pesoMotor || 0;
+        document.getElementById('medidasMotor').value = item.medidasMotor || '';
+        document.getElementById('vol').value = extrairNumeroVol(item.vol) || 1;
+        document.getElementById('infoAdd').value = item.infoAdd || '';
+
+        document.getElementById('btnSalvar').innerText = '💾 Salvar Alterações';
+        const btnCancelar = document.getElementById('btnCancelarEdicao');
+        if (btnCancelar) btnCancelar.style.display = 'inline-block';
+
+        document.getElementById('formMaquina').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function cancelarEdicao() {
+        document.getElementById('editIndex').value = '-1';
+        document.getElementById('formMaquina').reset();
+        document.getElementById('btnSalvar').innerText = '➕ Cadastrar no Google Drive';
+        
+        const btnCancelar = document.getElementById('btnCancelarEdicao');
+        if (btnCancelar) btnCancelar.style.display = 'none';
+    }
+
+    function excluirMaquina(index) {
+        const item = bancoDados[index];
+        if (!item) return;
+
+        if (confirm(`Tem certeza que deseja excluir "${item.marca} - ${item.modelo}"?`)) {
+            const rowIndex = index + 1;
+            const script = document.createElement('script');
+            script.src = `${URL_GOOGLE_SCRIPT}?action=delete&rowIndex=${rowIndex}&callback=callbackCarregarDados&t=${Date.now()}`;
+            document.body.appendChild(script);
+
+            alert('Solicitação de exclusão enviada!');
+        }
+    }
+
+    function alternarTela(idTela) {
+        if (idTela === 'telaCadastro') {
+            const senhaDigitada = prompt("Digite a senha para acessar o gerenciamento:\nEX: 123456");
+            if (senhaDigitada !== '123456') {
+                if (senhaDigitada !== null) alert("Senha incorreta!");
+                return;
+            }
+        }
+
+        document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+        document.getElementById(idTela).classList.add('active');
+
+        if (idTela === 'telaCalculadora') carregarSelectCalculadora(bancoDados);
+        else if (idTela === 'telaCadastro') atualizarTabelaCadastro();
+    }
+
+    function carregarSelectCalculadora(lista) {
+        const select = document.getElementById('modeloSelect');
+        select.innerHTML = '';
+        
+        if (!lista || lista.length === 0) {
+            const opt = document.createElement('option');
+            opt.disabled = true;
+            opt.innerText = 'Nenhuma máquina encontrada na planilha.';
+            select.appendChild(opt);
+            return;
+        }
+
+        lista.forEach((item, index) => {
+            const opt = document.createElement('option');
+            opt.value = index;
+            opt.innerText = `${item.marca} - ${item.modelo}`;
+            select.appendChild(opt);
+        });
+
+        if (lista.length > 0) select.selectedIndex = 0;
+    }
+
+    function filtrarModelos() {
+        const busca = document.getElementById('search').value.toLowerCase();
+        const filtrados = bancoDados.filter(item => 
+            item.marca.toLowerCase().includes(busca) || 
+            item.modelo.toLowerCase().includes(busca)
+        );
+        carregarSelectCalculadora(filtrados);
+    }
+
+    function adicionarItemCarga() {
+        const select = document.getElementById('modeloSelect');
+        const qtdInput = document.getElementById('qtd');
+        const quantidade = parseInt(qtdInput.value) || 1;
+
+        if (select.selectedIndex === -1 || bancoDados.length === 0) {
+            alert('Selecione uma máquina válida.');
+            return;
+        }
+
+        const textoSelecionado = select.options[select.selectedIndex].innerText;
+        const modeloEncontrado = bancoDados.find(item => {
+            const nomeComposed = `${item.marca} - ${item.modelo}`;
+            return textoSelecionado === nomeComposed;
+        });
+
+        if (!modeloEncontrado) return;
+
+        const pesoCalculadoUnitario = calcularPesoUnitarioTotal(modeloEncontrado);
+        const volNumUnitario = extrairNumeroVol(modeloEncontrado.vol);
+
+        listaCarga.push({
+            ...modeloEncontrado,
+            qtd: quantidade,
+            volUnitarioNum: volNumUnitario,
+            volTotalCalculado: volNumUnitario * quantidade,
+            pesoUnitarioTotal: pesoCalculadoUnitario,
+            pesoTotal: pesoCalculadoUnitario * quantidade
+        });
+
+        atualizarTabelaCarga();
+    }
+
+    function removerItemCarga(index) {
+        listaCarga.splice(index, 1);
+        atualizarTabelaCarga();
+    }
+
+    function limparListaCarga() {
+        listaCarga = [];
+        atualizarTabelaCarga();
+    }
+
+    function atualizarTabelaCarga() {
+        const corpo = document.getElementById('corpoTabelaCarga');
+        const caixaTotal = document.getElementById('caixaTotal');
+
+        if (listaCarga.length === 0) {
+            corpo.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #cbd5e1;">Nenhum item adicionado à lista.</td></tr>`;
+            caixaTotal.innerText = 'Total de Máquinas: 0 un | Total VOL: 0 | Peso Total da Carga: 0.00 Kg';
+            return;
+        }
+
+        let totalQtd = 0;
+        let totalPeso = 0;
+        let totalVol = 0;
+
+        corpo.innerHTML = listaCarga.map((item, index) => {
+            totalQtd += item.qtd;
+            totalPeso += item.pesoTotal;
+            totalVol += item.volTotalCalculado;
+
+            // --- FORMATAÇÃO DE DETALHES ---
+            
+            // 1. CABEÇOTE (Medida + Peso)
+            let maqDetalhes = [];
+            if (item.medidas && item.medidas.trim() !== '') maqDetalhes.push(item.medidas.trim());
+            if (parseNum(item.peso) > 0) maqDetalhes.push(`${Number(item.peso).toFixed(2)} Kg`);
+            let strMaq = maqDetalhes.length > 0 ? `<strong>Cab.:</strong> ${maqDetalhes.join(' - ')}` : '';
+
+            // 2. MESA (Nome/Medida + Peso)
+            let mesaDetalhes = [];
+            let mesaInfo = item.mesa || '';
+            if (item.medidasMesa && item.medidasMesa.trim() !== '') {
+                mesaInfo += mesaInfo ? ` (${item.medidasMesa.trim()})` : item.medidasMesa.trim();
+            }
+            if (mesaInfo) mesaDetalhes.push(mesaInfo);
+            if (parseNum(item.pesoMesa) > 0) mesaDetalhes.push(`${Number(item.pesoMesa).toFixed(2)} Kg`);
+            let strMesa = mesaDetalhes.length > 0 ? `<strong>Mesa:</strong> ${mesaDetalhes.join(' - ')}` : '';
+
+            // 3. MOTOR (Tipo/Medida + Peso)
+            let motorDetalhes = [];
+            let motorInfo = item.motor || '';
+            if (item.medidasMotor && item.medidasMotor.trim() !== '') {
+                motorInfo += motorInfo ? ` (${item.medidasMotor.trim()})` : item.medidasMotor.trim();
+            }
+            if (motorInfo) motorDetalhes.push(motorInfo);
+            if (parseNum(item.pesoMotor) > 0) motorDetalhes.push(`${Number(item.pesoMotor).toFixed(2)} Kg`);
+            let strMotor = motorDetalhes.length > 0 ? `<strong>Motor:</strong> ${motorDetalhes.join(' - ')}` : '';
+
+            // 4. OBSERVAÇÕES (Obs)
+            let strObs = (item.infoAdd && item.infoAdd.trim() !== '') ? `<strong>Obs.:</strong> ${item.infoAdd.trim()}` : '';
+
+            // Montagem das listas para Tooltip e Impressão
+            let partesInfo = [strMaq, strMesa, strMotor, strObs].filter(p => p !== '');
+
+            const temInformacaoExtra = partesInfo.length > 0;
+            const tooltipHTML = partesInfo.join('<br>');
+            const printInfoHTML = partesInfo.join(' | ');
+
+            const celulaModelo = temInformacaoExtra 
+                ? `<div class="info-tooltip-container">
+                    <strong>${item.modelo}</strong><span class="star-highlight">*</span>
+                    <div class="info-tooltip-text">${tooltipHTML}</div>
+                   </div>
+                   <div class="print-info-inline">${printInfoHTML}</div>`
+                : item.modelo;
+
+            return `
+                <tr>
+                    <td><strong>${item.qtd}</strong></td>
+                    <td><strong>${item.marca}</strong></td>
+                    <td>${celulaModelo}</td>
+                    <td>${item.vol || '-'}</td>
+                    <td>${Number(item.pesoUnitarioTotal).toFixed(2)} Kg</td>
+                    <td><strong>${Number(item.pesoTotal).toFixed(2)} Kg &nbsp;/&nbsp; ${item.volTotalCalculado}</strong></td>
+                    <td class="col-acoes"><button class="btn-danger-sm" onclick="removerItemCarga(${index})">Remover</button></td>
+                </tr>
+            `;
+        }).join('');
+
+        caixaTotal.innerText = `Total de Máquinas: ${totalQtd} un | Total VOL: ${totalVol} | Peso Total da Carga: ${totalPeso.toFixed(2)} Kg`;
+    }
+
+    function atualizarTabelaCadastro() {
+        const corpo = document.getElementById('corpoTabelaCadastro');
+        const contador = document.getElementById('totalContador');
+        
+        if (contador) contador.textContent = bancoDados.length;
+
+        if (!corpo) return;
+
+        if (bancoDados.length === 0) {
+            corpo.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #cbd5e1;">Nenhuma máquina encontrada na planilha.</td></tr>`;
+            return;
+        }
+
+        corpo.innerHTML = bancoDados.map((m, index) => {
+            const pesoTotalUnitario = calcularPesoUnitarioTotal(m);
+            return `
+                <tr>
+                    <td><strong>${m.marca}</strong></td>
+                    <td>${m.modelo}</td>
+                    <td>${m.medidas || '-'}</td>
+                    <td>${m.vol || '-'}</td>
+                    <td><strong>${Number(pesoTotalUnitario).toFixed(2)} Kg</strong></td>
+                    <td class="col-acoes">
+                        <button class="btn-edit-sm" onclick="editarMaquina(${index})">✏️ Editar</button>
+                        <button class="btn-danger-sm" onclick="excluirMaquina(${index})">🗑️ Excluir</button>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    }
+
+    function exportarExcelBackup() {
+        if (bancoDados.length === 0) {
+            alert('Nenhum dado para exportar.');
+            return;
+        }
+
+        const dadosExcel = bancoDados.map(item => ({
+            "Marca / Origem": item.marca,
+            "Modelo da Máquina": item.modelo,
+            "Peso do Cabeçote (Kg)": item.peso,
+            "Medidas do Cabeçote (cm)": item.medidas,
+            "Modelo da Mesa": item.mesa,
+            "Peso da Mesa (Kg)": item.pesoMesa,
+            "Medidas da Mesa (cm)": item.medidasMesa,
+            "Motor": item.motor,
+            "Peso do Motor (Kg)": item.pesoMotor,
+            "Medidas do Motor (cm)": item.medidasMotor,
+            "VOL (Qtd Volumes)": item.vol,
+            "Informações Adicionais (Inf. Add)": item.infoAdd
+        }));
+
+        const ws = XLSX.utils.json_to_sheet(dadosExcel);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Banco_de_Maquinas");
+        XLSX.writeFile(wb, "Backup_Banco_Maquinas.xlsx");
+    }
+
+    carregarDadosDrive();
+</script>
+
+</body>
+</html>
