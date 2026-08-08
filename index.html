@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Relatorio de Carga</title>
+    <title>Relatório de Carga</title>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <style>
         * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
@@ -158,6 +158,24 @@
         
         .btn-cancel { background-color: #64748b; color: white; display: none; }
 
+        .table-header-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .search-cadastro-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            max-width: 380px;
+            width: 100%;
+        }
+
         .table-responsive-container {
             width: 100%;
             overflow: visible; 
@@ -182,13 +200,37 @@
         th { background-color: rgba(30, 41, 59, 0.9); color: #38bdf8; font-weight: 700; position: sticky; top: 0; z-index: 1; }
         tr:nth-child(even) { background-color: rgba(255, 255, 255, 0.05); }
         
-        .col-qtd { width: 60px; }
-        .col-marca { width: 130px; }
+        tr.row-error {
+            background-color: rgba(239, 68, 68, 0.25) !important;
+            border: 1px solid #ef4444 !important;
+        }
+        tr.row-error td {
+            border-color: rgba(239, 68, 68, 0.4) !important;
+        }
+        .error-tag {
+            background-color: #ef4444;
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-top: 4px;
+        }
+
+        .col-qtd { width: 50px; }
+        .col-marca { width: 110px; }
         .col-modelo { width: 220px; }
-        .col-vol-unit { width: 90px; }
-        .col-peso-unit { width: 150px; }
-        .col-peso-vol-tot { width: 180px; }
-        .col-acoes { width: 100px; }
+        .col-vol-unit { width: 75px; }
+        .col-unit-resumo { width: 130px; }
+        .col-totais-resumo { width: 180px; }
+        .col-acoes { width: 90px; }
+
+        .medida-detalhe {
+            text-align: center;
+            font-size: 12px;
+            line-height: 1.4;
+        }
 
         .total-box { 
             background: rgba(10, 15, 30, 0.85); 
@@ -198,15 +240,17 @@
             padding: 15px; 
             border-radius: 8px; 
             margin-top: 20px; 
-            font-size: 18px; 
+            font-size: 16px; 
             font-weight: bold; 
             text-align: right; 
             text-shadow: 0 1px 2px rgba(0,0,0,0.5);
             position: relative;
             z-index: 1;
+            line-height: 1.5;
         }
-        
-        /* BALÃO INFORMATIVO (TOOLTIP NA TELA) */
+
+        .total-box span.highlight { color: #38bdf8; }
+
         .info-tooltip-container { 
             position: relative; 
             display: inline-flex; 
@@ -228,7 +272,7 @@
 
         .info-tooltip-text {
             visibility: hidden;
-            width: 320px;
+            width: 360px;
             background-color: #090d16;
             color: #ffffff;
             text-align: left;
@@ -273,30 +317,11 @@
         #syncContainer { display: inline-flex; align-items: center; gap: 8px; margin-left: 10px; }
         #loadingStatus { font-size: 13px; color: #38bdf8; font-weight: bold; }
 
-        /* REGRAS DE IMPRESSÃO / SALVAR PDF */
         @media print { 
-            @page { 
-                margin: 10mm; 
-                size: auto; 
-            }
-            
-            body { 
-                background: white !important; 
-                padding: 0 !important; 
-                color: #000000 !important; 
-            } 
-            
-            .container { 
-                margin-top: 0 !important; 
-                box-shadow: none !important; 
-                padding: 0 !important; 
-                background: white !important; 
-                max-width: 100% !important; 
-            } 
-            
-            .form-grid-calc, .btn-clear-sec, .btn-danger-sm, .btn-edit-sm, .btn-nav, p.subtitle, .header-bar, #syncContainer, .col-acoes { 
-                display: none !important; 
-            } 
+            @page { margin: 10mm; size: auto; }
+            body { background: white !important; padding: 0 !important; color: #000000 !important; } 
+            .container { margin-top: 0 !important; box-shadow: none !important; padding: 0 !important; background: white !important; max-width: 100% !important; } 
+            .form-grid-calc, .btn-clear-sec, .btn-danger-sm, .btn-edit-sm, .btn-nav, p.subtitle, .header-bar, #syncContainer, .col-acoes, .table-header-controls { display: none !important; } 
             
             .print-header {
                 display: flex !important;
@@ -306,56 +331,31 @@
                 padding-bottom: 12px;
                 margin-bottom: 20px;
             }
-
-            .print-header img {
-                max-height: 55px;
-                width: auto;
-            }
-
-            .print-header-title {
-                text-align: right;
-            }
-
-            .print-header-title h1 {
-                color: #000 !important;
-                font-size: 20px !important;
-                margin: 0;
-                text-shadow: none !important;
-            }
-
-            .print-header-title p {
-                margin: 3px 0 0 0;
-                font-size: 11px;
-                color: #444;
-            }
+            .print-header img { max-height: 55px; width: auto; }
+            .print-header-title { text-align: right; }
+            .print-header-title h1 { color: #000 !important; font-size: 18px !important; margin: 0; text-shadow: none !important; font-weight: bold; }
+            .print-header-title p { margin: 3px 0 0 0; font-size: 11px; color: #444; font-weight: 600; }
 
             h2 { color: #000 !important; text-shadow: none !important; font-size: 16px !important; margin-bottom: 10px !important; }
-
-            .table-responsive-container {
-                border: none !important;
-                background: white !important;
-            }
-
+            .table-responsive-container { border: none !important; background: white !important; }
             table { border-collapse: collapse !important; width: 100% !important; color: #000 !important; }
-            th, td { border: 1px solid #000 !important; color: #000 !important; padding: 8px 6px !important; font-size: 12px !important; }
+            th, td { border: 1px solid #000 !important; color: #000 !important; padding: 8px 6px !important; font-size: 11px !important; text-align: center !important; }
             th { background-color: #f1f5f9 !important; color: #000 !important; }
             tr:nth-child(even) { background-color: #fafafa !important; }
+            tr.row-error { background-color: #fee2e2 !important; }
+            .star-highlight, .info-tooltip-text { display: none !important; }
 
-            .star-highlight { display: none !important; }
-            .info-tooltip-text { display: none !important; }
-
-            /* BLOCO DE DETALHES VISÍVEL NA IMPRESSÃO */
             .print-info-inline {
                 display: block !important;
-                font-size: 11px !important;
+                font-size: 10px !important;
                 color: #222222 !important;
                 margin-top: 5px !important;
                 line-height: 1.4 !important;
                 background-color: #f8fafc;
-                padding: 6px 8px;
+                padding: 5px 7px;
                 border-radius: 4px;
                 border: 1px dashed #94a3b8;
-                text-align: left;
+                text-align: center;
             }
 
             .total-box { 
@@ -363,7 +363,7 @@
                 color: #000000 !important; 
                 border: 2px solid #000000 !important; 
                 text-shadow: none !important;
-                font-size: 15px !important;
+                font-size: 14px !important;
                 padding: 12px !important;
                 margin-top: 15px !important;
             }
@@ -374,11 +374,10 @@
 
 <div class="container">
 
-    <!-- CABEÇALHO OFICIAL DE IMPRESSÃO COM LOGO -->
     <div class="print-header">
-        <img src="logo.png" alt="Andrade Máquinas Ltd.">
+        <img src="logo.png" alt="Andrade Máquinas Ltda.">
         <div class="print-header-title">
-            <h1>Relatório de Carga e Medidas</h1>
+            <h1>Relatório de Carga, Cubagem e Peso</h1>
             <p>Andrade Máquinas Ltda.</p>
         </div>
     </div>
@@ -386,11 +385,11 @@
     <!-- TELA PRINCIPAL: CALCULADORA -->
     <div id="telaCalculadora" class="page-view active">
         <div class="header-bar">
-            <h1>Calculadora de medidas de maquina</h1>
+            <h1>Relatório de Carga</h1>
             <button class="btn-nav" onclick="alternarTela('telaCadastro')">⚙️ Adicionar / Gerenciar Máquinas</button>
         </div>
         
-        <p class="subtitle">Pesquise o modelo, selecione a quantidade e gere o relatório completo de peso e Vol TOTAL.</p>
+        <p class="subtitle">Pesquise o modelo, selecione a quantidade e gere o relatório completo de Peso, Cubagem (m³) e Volumes.</p>
 
         <div class="form-grid-calc">
             <div class="form-group">
@@ -425,10 +424,10 @@
                     <tr>
                         <th class="col-qtd">Qtd</th>
                         <th class="col-marca">Marca / Origem</th>
-                        <th class="col-modelo">Modelo</th>
+                        <th class="col-modelo">Modelo & Dimensões / Cubagem</th>
                         <th class="col-vol-unit">VOL Unit.</th>
-                        <th class="col-peso-unit">Peso Unit. Total (Kg)</th>
-                        <th class="col-peso-vol-tot">Peso (Kg) / Vol TOTAL</th>
+                        <th class="col-unit-resumo">Unitário (Peso / m³)</th>
+                        <th class="col-totais-resumo">TOTAIS (Peso / m³ / VOL)</th>
                         <th class="col-acoes">Ações</th>
                     </tr>
                 </thead>
@@ -441,7 +440,7 @@
         </div>
 
         <div class="total-box" id="caixaTotal">
-            Total de Máquinas: 0 un | Total VOL: 0 | Peso Total da Carga: 0.00 Kg
+            Total de Máquinas: 0 un | Total VOL: 0 | Cubagem Total: 0.000 m³ | Peso Total: 0.00 Kg
         </div>
     </div>
 
@@ -457,7 +456,6 @@
             <input type="hidden" id="editIndex" value="-1">
 
             <div class="form-container">
-                <!-- LINHA 1: Marca e VOL -->
                 <div class="form-divider">🏷️ Identificação & Volume</div>
                 <div class="form-row row-2-cols">
                     <div class="form-group">
@@ -470,7 +468,6 @@
                     </div>
                 </div>
 
-                <!-- LINHA 2: Cabeçote / Máquina -->
                 <div class="form-divider">📌 Dados do Cabeçote / Máquina</div>
                 <div class="form-row row-3-cols">
                     <div class="form-group">
@@ -487,7 +484,6 @@
                     </div>
                 </div>
 
-                <!-- LINHA 3: Mesa -->
                 <div class="form-divider">📐 Dados da Mesa</div>
                 <div class="form-row row-3-cols">
                     <div class="form-group">
@@ -504,7 +500,6 @@
                     </div>
                 </div>
 
-                <!-- LINHA 4: Motor -->
                 <div class="form-divider">⚡ Dados do Motor</div>
                 <div class="form-row row-3-cols">
                     <div class="form-group">
@@ -521,7 +516,6 @@
                     </div>
                 </div>
 
-                <!-- LINHA 5: Inf. Add -->
                 <div class="form-divider">📝 Informações Adicionais</div>
                 <div class="form-row row-1-col">
                     <div class="form-group">
@@ -538,17 +532,22 @@
             </div>
         </form>
 
-        <h2>📋 Máquinas na Planilha (<span id="totalContador">0</span>)</h2>
+        <div class="table-header-controls">
+            <h2 style="margin: 0;">📋 Máquinas na Planilha (<span id="totalContador">0</span>)</h2>
+            <div class="search-cadastro-box">
+                <input type="text" id="searchCadastro" placeholder="🔍 Buscar no cadastro (Marca, Modelo...)" oninput="atualizarTabelaCadastro()">
+            </div>
+        </div>
         
         <div class="table-responsive-container">
             <table>
                 <thead>
                     <tr>
-                        <th style="width: 130px;">Marca / Origem</th>
-                        <th style="width: 200px;">Modelo</th>
-                        <th style="width: 180px;">Medidas (Cab)</th>
-                        <th style="width: 90px;">VOL</th>
-                        <th style="width: 180px;">Peso Total (Cab+Mesa+Motor) (Kg)</th>
+                        <th style="width: 120px;">Marca / Origem</th>
+                        <th style="width: 180px;">Modelo</th>
+                        <th style="width: 260px;">Medidas (Máq / Mesa / Motor)</th>
+                        <th style="width: 60px;">VOL</th>
+                        <th style="width: 150px;">Unitário (Peso / Cubagem Total)</th>
                         <th class="col-acoes">Ações</th>
                     </tr>
                 </thead>
@@ -567,6 +566,16 @@
 
     let bancoDados = [];
     let listaCarga = [];
+    let elementoEditando = null;
+
+    function normalizarTexto(txt) {
+        if (!txt) return '';
+        return String(txt)
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/[^a-z0-9]/g, '');
+    }
 
     function parseNum(val) {
         if (!val) return 0;
@@ -574,17 +583,42 @@
         return parseFloat(cleaned) || 0;
     }
 
-    function formatarMedida(medidaStr) {
+    function calcularCubagemEmM3(medidaStr) {
+        if (!medidaStr) return 0;
+        const numeros = medidaStr.match(/\d+(?:\.\d+)?/g);
+        if (numeros && numeros.length >= 3) {
+            const c = parseFloat(numeros[0]);
+            const l = parseFloat(numeros[1]);
+            const a = parseFloat(numeros[2]);
+            if (!isNaN(c) && !isNaN(l) && !isNaN(a)) {
+                return (c * l * a) / 1000000;
+            }
+        }
+        return 0;
+    }
+
+    function formatarMedidaComCubagem(medidaStr) {
         if (!medidaStr || !medidaStr.trim()) return '';
         let str = medidaStr.trim();
-        if (!/cm$/i.test(str)) {
-            str += ' Cm';
+        
+        let strLimpa = str.replace(/cm$/i, '').trim();
+        strLimpa += ' cm';
+
+        const m3 = calcularCubagemEmM3(str);
+        if (m3 > 0) {
+            return `${strLimpa} (${m3.toFixed(3)} m³)`;
         }
-        return str;
+        return strLimpa;
     }
 
     function calcularPesoUnitarioTotal(item) {
         return parseNum(item.peso) + parseNum(item.pesoMesa) + parseNum(item.pesoMotor);
+    }
+
+    function calcularCubagemUnitariaTotal(item) {
+        return calcularCubagemEmM3(item.medidas) + 
+               calcularCubagemEmM3(item.medidasMesa) + 
+               calcularCubagemEmM3(item.medidasMotor);
     }
 
     function extrairNumeroVol(volTexto) {
@@ -592,6 +626,30 @@
         const tratado = String(volTexto).replace(',', '.');
         const match = tratado.match(/[-+]?[0-9]+/);
         return match ? parseInt(match[0], 10) : 0;
+    }
+
+    function validarItemCampos(item) {
+        let erros = [];
+
+        if (item.mesa && item.mesa.trim() !== '') {
+            const temPeso = parseNum(item.pesoMesa) > 0;
+            const temMedidas = item.medidasMesa && item.medidasMesa.trim() !== '';
+
+            if (!temPeso || !temMedidas) {
+                erros.push("Mesa preenchida sem Peso ou Medidas");
+            }
+        }
+
+        if (item.motor && item.motor.trim() !== '') {
+            const temPeso = parseNum(item.pesoMotor) > 0;
+            const temMedidas = item.medidasMotor && item.medidasMotor.trim() !== '';
+
+            if (!temPeso || !temMedidas) {
+                erros.push("Motor preenchido sem Peso ou Medidas");
+            }
+        }
+
+        return erros;
     }
 
     function callbackCarregarDados(data) {
@@ -637,8 +695,6 @@
 
     async function salvarMaquina(e) {
         e.preventDefault();
-        const editIndex = parseInt(document.getElementById('editIndex').value);
-        const btn = document.getElementById('btnSalvar');
 
         const maquinaDados = {
             marca: document.getElementById('marca').value.trim(),
@@ -655,6 +711,15 @@
             infoAdd: document.getElementById('infoAdd').value.trim()
         };
 
+        const errosValidacao = validarItemCampos(maquinaDados);
+        if (errosValidacao.length > 0) {
+            alert('❌ ERRO DE PREENCHIMENTO:\n\n' + errosValidacao.join('\n') + '\n\nSe informar a Mesa ou o Motor, a Medida e o Peso tornam-se obrigatórios!');
+            return;
+        }
+
+        const editIndex = parseInt(document.getElementById('editIndex').value);
+        const btn = document.getElementById('btnSalvar');
+
         btn.disabled = true;
 
         if (editIndex >= 0) {
@@ -667,7 +732,7 @@
             document.body.appendChild(script);
 
             alert('Edição gravada! A lista será sincronizada.');
-            cancelarEdicao();
+            retornarAoItem();
         } else {
             btn.innerText = '⏳ Salvando na Planilha...';
             try {
@@ -689,9 +754,11 @@
         if (editIndex < 0) btn.innerText = '➕ Cadastrar no Google Drive';
     }
 
-    function editarMaquina(index) {
+    function editarMaquina(index, btnElement) {
         const item = bancoDados[index];
         if (!item) return;
+
+        elementoEditando = btnElement ? btnElement.closest('tr') : null;
 
         document.getElementById('editIndex').value = index;
         document.getElementById('marca').value = item.marca || '';
@@ -711,16 +778,29 @@
         const btnCancelar = document.getElementById('btnCancelarEdicao');
         if (btnCancelar) btnCancelar.style.display = 'inline-block';
 
-        document.getElementById('formMaquina').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        document.getElementById('formMaquina').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
-    function cancelarEdicao() {
+    function retornarAoItem() {
+        if (elementoEditando) {
+            elementoEditando.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        cancelarEdicao(false);
+    }
+
+    function cancelarEdicao(rolar = true) {
+        if (rolar && elementoEditando) {
+            elementoEditando.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        
         document.getElementById('editIndex').value = '-1';
         document.getElementById('formMaquina').reset();
         document.getElementById('btnSalvar').innerText = '➕ Cadastrar no Google Drive';
         
         const btnCancelar = document.getElementById('btnCancelarEdicao');
         if (btnCancelar) btnCancelar.style.display = 'none';
+
+        elementoEditando = null;
     }
 
     function excluirMaquina(index) {
@@ -765,9 +845,10 @@
             return;
         }
 
-        lista.forEach((item, index) => {
+        lista.forEach((item) => {
+            const indexReal = bancoDados.indexOf(item);
             const opt = document.createElement('option');
-            opt.value = index;
+            opt.value = indexReal;
             opt.innerText = `${item.marca} - ${item.modelo}`;
             select.appendChild(opt);
         });
@@ -776,11 +857,12 @@
     }
 
     function filtrarModelos() {
-        const busca = document.getElementById('search').value.toLowerCase();
-        const filtrados = bancoDados.filter(item => 
-            item.marca.toLowerCase().includes(busca) || 
-            item.modelo.toLowerCase().includes(busca)
-        );
+        const buscaNorm = normalizarTexto(document.getElementById('search').value);
+        const filtrados = bancoDados.filter(item => {
+            const marcaNorm = normalizarTexto(item.marca);
+            const modeloNorm = normalizarTexto(item.modelo);
+            return marcaNorm.includes(buscaNorm) || modeloNorm.includes(buscaNorm);
+        });
         carregarSelectCalculadora(filtrados);
     }
 
@@ -794,15 +876,13 @@
             return;
         }
 
-        const textoSelecionado = select.options[select.selectedIndex].innerText;
-        const modeloEncontrado = bancoDados.find(item => {
-            const nomeComposed = `${item.marca} - ${item.modelo}`;
-            return textoSelecionado === nomeComposed;
-        });
+        const indexBanco = parseInt(select.value);
+        const modeloEncontrado = bancoDados[indexBanco];
 
         if (!modeloEncontrado) return;
 
         const pesoCalculadoUnitario = calcularPesoUnitarioTotal(modeloEncontrado);
+        const cubagemCalculadaUnitaria = calcularCubagemUnitariaTotal(modeloEncontrado);
         const volNumUnitario = extrairNumeroVol(modeloEncontrado.vol);
 
         listaCarga.push({
@@ -811,7 +891,9 @@
             volUnitarioNum: volNumUnitario,
             volTotalCalculado: volNumUnitario * quantidade,
             pesoUnitarioTotal: pesoCalculadoUnitario,
-            pesoTotal: pesoCalculadoUnitario * quantidade
+            pesoTotal: pesoCalculadoUnitario * quantidade,
+            cubagemUnitariaTotal: cubagemCalculadaUnitaria,
+            cubagemTotal: cubagemCalculadaUnitaria * quantidade
         });
 
         atualizarTabelaCarga();
@@ -833,55 +915,50 @@
 
         if (listaCarga.length === 0) {
             corpo.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #cbd5e1;">Nenhum item adicionado à lista.</td></tr>`;
-            caixaTotal.innerText = 'Total de Máquinas: 0 un | Total VOL: 0 | Peso Total da Carga: 0.00 Kg';
+            caixaTotal.innerHTML = 'Total de Máquinas: 0 un | Total VOL: 0 | Cubagem Total: 0.000 m³ | Peso Total: 0.00 Kg';
             return;
         }
 
         let totalQtd = 0;
         let totalPeso = 0;
         let totalVol = 0;
+        let totalCubagem = 0;
 
         corpo.innerHTML = listaCarga.map((item, index) => {
             totalQtd += item.qtd;
             totalPeso += item.pesoTotal;
             totalVol += item.volTotalCalculado;
+            totalCubagem += item.cubagemTotal;
 
-            // --- FORMATAÇÃO DE DETALHES ---
-            
-            // 1. CABEÇOTE (Medida + Peso)
             let maqDetalhes = [];
             if (item.medidas && item.medidas.trim() !== '') {
-                maqDetalhes.push(formatarMedida(item.medidas));
+                maqDetalhes.push(formatarMedidaComCubagem(item.medidas));
             }
             if (parseNum(item.peso) > 0) maqDetalhes.push(`${Number(item.peso).toFixed(2)} Kg`);
             let strMaq = maqDetalhes.length > 0 ? `<strong>Cab.:</strong> ${maqDetalhes.join(' - ')}` : '';
 
-            // 2. MESA (Nome/Medida + Peso)
             let mesaDetalhes = [];
             let mesaInfo = item.mesa ? item.mesa.trim() : '';
             if (item.medidasMesa && item.medidasMesa.trim() !== '') {
-                let medM = formatarMedida(item.medidasMesa);
+                let medM = formatarMedidaComCubagem(item.medidasMesa);
                 mesaInfo += mesaInfo ? ` ${medM}` : medM;
             }
             if (mesaInfo) mesaDetalhes.push(mesaInfo);
             if (parseNum(item.pesoMesa) > 0) mesaDetalhes.push(`${Number(item.pesoMesa).toFixed(2)} Kg`);
             let strMesa = mesaDetalhes.length > 0 ? `<strong>Mesa:</strong> ${mesaDetalhes.join(' - ')}` : '';
 
-            // 3. MOTOR (Tipo/Medida + Peso)
             let motorDetalhes = [];
             let motorInfo = item.motor ? item.motor.trim() : '';
             if (item.medidasMotor && item.medidasMotor.trim() !== '') {
-                let medMot = formatarMedida(item.medidasMotor);
+                let medMot = formatarMedidaComCubagem(item.medidasMotor);
                 motorInfo += motorInfo ? ` ${medMot}` : medMot;
             }
             if (motorInfo) motorDetalhes.push(motorInfo);
             if (parseNum(item.pesoMotor) > 0) motorDetalhes.push(`${Number(item.pesoMotor).toFixed(2)} Kg`);
             let strMotor = motorDetalhes.length > 0 ? `<strong>Motor:</strong> ${motorDetalhes.join(' - ')}` : '';
 
-            // 4. OBSERVAÇÕES (Obs)
             let strObs = (item.infoAdd && item.infoAdd.trim() !== '') ? `<strong>Obs.:</strong> ${item.infoAdd.trim()}` : '';
 
-            // Montagem das listas para Tooltip e Impressão
             let partesInfo = [strMaq, strMesa, strMotor, strObs].filter(p => p !== '');
 
             const temInformacaoExtra = partesInfo.length > 0;
@@ -902,41 +979,86 @@
                     <td><strong>${item.marca}</strong></td>
                     <td>${celulaModelo}</td>
                     <td>${item.vol || '-'}</td>
-                    <td>${Number(item.pesoUnitarioTotal).toFixed(2)} Kg</td>
-                    <td><strong>${Number(item.pesoTotal).toFixed(2)} Kg &nbsp;/&nbsp; ${item.volTotalCalculado}</strong></td>
+                    <td>${Number(item.pesoUnitarioTotal).toFixed(2)} Kg<br><small style="color:#38bdf8;">${item.cubagemUnitariaTotal.toFixed(3)} m³</small></td>
+                    <td><strong>${Number(item.pesoTotal).toFixed(2)} Kg</strong><br><span style="color:#38bdf8; font-size:12px;"><strong>${item.cubagemTotal.toFixed(3)} m³</strong></span><br><small>VOL: ${item.volTotalCalculado}</small></td>
                     <td class="col-acoes"><button class="btn-danger-sm" onclick="removerItemCarga(${index})">Remover</button></td>
                 </tr>
             `;
         }).join('');
 
-        caixaTotal.innerText = `Total de Máquinas: ${totalQtd} un | Total VOL: ${totalVol} | Peso Total da Carga: ${totalPeso.toFixed(2)} Kg`;
+        caixaTotal.innerHTML = `
+            Total de Máquinas: <strong>${totalQtd} un</strong> | 
+            Total VOL: <strong>${totalVol}</strong> | 
+            Cubagem Total: <span class="highlight">${totalCubagem.toFixed(3)} m³</span> | 
+            Peso Total da Carga: <strong>${totalPeso.toFixed(2)} Kg</strong>
+        `;
     }
 
     function atualizarTabelaCadastro() {
         const corpo = document.getElementById('corpoTabelaCadastro');
         const contador = document.getElementById('totalContador');
+        const buscaInput = document.getElementById('searchCadastro');
+        const termoNorm = buscaInput ? normalizarTexto(buscaInput.value) : '';
         
-        if (contador) contador.textContent = bancoDados.length;
-
         if (!corpo) return;
 
-        if (bancoDados.length === 0) {
-            corpo.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #cbd5e1;">Nenhuma máquina encontrada na planilha.</td></tr>`;
+        const listaExibida = bancoDados.filter(m => {
+            if (!termoNorm) return true;
+            const marcaNorm = normalizarTexto(m.marca);
+            const modeloNorm = normalizarTexto(m.modelo);
+            const mesaNorm = normalizarTexto(m.mesa);
+            return marcaNorm.includes(termoNorm) || modeloNorm.includes(termoNorm) || mesaNorm.includes(termoNorm);
+        });
+
+        if (contador) contador.textContent = listaExibida.length;
+
+        if (listaExibida.length === 0) {
+            corpo.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #cbd5e1;">Nenhuma máquina encontrada.</td></tr>`;
             return;
         }
 
-        corpo.innerHTML = bancoDados.map((m, index) => {
+        corpo.innerHTML = listaExibida.map((m) => {
+            const indexOriginal = bancoDados.indexOf(m);
             const pesoTotalUnitario = calcularPesoUnitarioTotal(m);
+            const cubagemTotalUnitario = calcularCubagemUnitariaTotal(m);
+
+            const erros = validarItemCampos(m);
+            const temErro = erros.length > 0;
+            const classeLinha = temErro ? 'row-error' : '';
+
+            let linhasMedida = [];
+            
+            if (m.medidas && m.medidas.trim() !== '') {
+                linhasMedida.push(`<b>Máq:</b> ${formatarMedidaComCubagem(m.medidas)}`);
+            }
+            if (m.medidasMesa && m.medidasMesa.trim() !== '') {
+                linhasMedida.push(`<b>Mesa:</b> ${formatarMedidaComCubagem(m.medidasMesa)}`);
+            }
+            if (m.medidasMotor && m.medidasMotor.trim() !== '') {
+                linhasMedida.push(`<b>Motor:</b> ${formatarMedidaComCubagem(m.medidasMotor)}`);
+            }
+
+            let htmlMedidas = linhasMedida.length > 0 
+                ? `<div class="medida-detalhe">${linhasMedida.join('<br>')}</div>` 
+                : '-';
+
+            if (temErro) {
+                htmlMedidas += `<br><span class="error-tag">⚠️ ${erros.join(', ')}</span>`;
+            }
+
             return `
-                <tr>
+                <tr class="${classeLinha}">
                     <td><strong>${m.marca}</strong></td>
                     <td>${m.modelo}</td>
-                    <td>${m.medidas ? formatarMedida(m.medidas) : '-'}</td>
+                    <td>${htmlMedidas}</td>
                     <td>${m.vol || '-'}</td>
-                    <td><strong>${Number(pesoTotalUnitario).toFixed(2)} Kg</strong></td>
+                    <td>
+                        <strong>${Number(pesoTotalUnitario).toFixed(2)} Kg</strong><br>
+                        <span style="color:#38bdf8; font-size:12px;"><strong>${cubagemTotalUnitario.toFixed(3)} m³</strong></span>
+                    </td>
                     <td class="col-acoes">
-                        <button class="btn-edit-sm" onclick="editarMaquina(${index})">✏️ Editar</button>
-                        <button class="btn-danger-sm" onclick="excluirMaquina(${index})">🗑️ Excluir</button>
+                        <button class="btn-edit-sm" onclick="editarMaquina(${indexOriginal}, this)">✏️ Editar</button>
+                        <button class="btn-danger-sm" onclick="excluirMaquina(${indexOriginal})">🗑️ Excluir</button>
                     </td>
                 </tr>
             `;
