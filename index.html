@@ -171,10 +171,11 @@
         .row-2-cols { grid-template-columns: 1fr 1fr; }
         .row-3-cols { grid-template-columns: 1fr 1fr 1fr; }
         .row-4-cols { grid-template-columns: 1fr 1fr 1fr 1fr; }
+        .row-custom-unificado { grid-template-columns: 0.8fr 1.6fr 1.1fr 1.5fr; }
         .row-1-col  { grid-template-columns: 1fr; }
 
         @media (max-width: 900px) {
-            .row-2-cols, .row-3-cols, .row-4-cols { grid-template-columns: 1fr; }
+            .row-2-cols, .row-3-cols, .row-4-cols, .row-custom-unificado { grid-template-columns: 1fr; }
         }
 
         .form-grid-calc { 
@@ -201,6 +202,7 @@
             border-radius: 6px; 
             font-size: 14px; 
             width: 100%; 
+            text-transform: uppercase;
         }
         input:focus, select:focus, textarea:focus { outline: none; border-color: #3b82f6; }
         
@@ -313,35 +315,48 @@
             background: rgba(14, 165, 233, 0.15);
             border: 1px solid #38bdf8;
             color: #e0f2fe;
-            padding: 12px 14px;
+            padding: 10px 12px;
             border-radius: 6px;
             display: none;
             font-size: 12px;
             margin-top: 6px;
-            line-height: 1.5;
+            line-height: 1.4;
         }
         .box-sugestoes-modelo ul {
-            margin: 6px 0 0 15px;
+            margin: 4px 0 8px 15px;
             padding: 0;
+            max-height: 90px;
+            overflow-y: auto;
         }
-        .item-similar-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: rgba(0,0,0,0.2);
-            padding: 6px 10px;
-            border-radius: 4px;
-            margin-top: 5px;
+        .box-sugestoes-modelo li {
+            margin-bottom: 2px;
         }
+
+        .box-aviso-codigo {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid #ef4444;
+            color: #fca5a5;
+            padding: 10px 12px;
+            border-radius: 6px;
+            display: none;
+            font-size: 12px;
+            margin-top: 6px;
+            line-height: 1.4;
+        }
+
         .btn-ciente {
             background-color: #16a34a;
             color: white;
             border: none;
-            padding: 4px 10px;
+            padding: 6px 14px;
             border-radius: 4px;
             font-weight: bold;
             cursor: pointer;
             font-size: 12px;
+            display: block;
+            width: 100%;
+            margin-top: 8px;
+            text-align: center;
         }
         .btn-ciente:hover { background-color: #15803d; }
         .btn-ciente.ciente-ok {
@@ -463,74 +478,22 @@
         }
         .btn-tab-type.active { background: #0284c7; border-color: #38bdf8; font-weight: bold; }
 
-        .print-header {
-            display: none;
-        }
+        .print-header { display: none; }
 
         @media print {
-            body {
-                background: #ffffff !important;
-                color: #000000 !important;
-                padding: 0 !important;
-            }
-            #splashScreen, .btn-nav, .tab-calc-buttons, .form-grid-calc, p.subtitle, .btn-clear-sec, .col-acoes, th.col-acoes, td.col-acoes, .header-bar {
-                display: none !important;
-            }
-            
-            .print-header {
-                display: flex !important;
-                justify-content: space-between;
-                align-items: center;
-                border-bottom: 2px solid #000;
-                padding-bottom: 10px;
-                margin-bottom: 20px;
-            }
-            .print-header img {
-                max-height: 50px;
-                width: auto;
-            }
-            .print-header h1 {
-                font-size: 22px;
-                color: #000;
-                margin: 0;
-                text-align: right;
-            }
-            .print-header span {
-                font-size: 12px;
-                color: #555;
-            }
-
-            .container {
-                margin: 0 !important;
-                padding: 10px !important;
-                max-width: 100% !important;
-            }
-            .table-responsive-container {
-                border: 1px solid #000 !important;
-                background: #fff !important;
-            }
-            table {
-                color: #000 !important;
-            }
-            th {
-                background-color: #f1f5f9 !important;
-                color: #000 !important;
-                border: 1px solid #000 !important;
-            }
-            td {
-                border: 1px solid #000 !important;
-                color: #000 !important;
-            }
-            tr:nth-child(even) {
-                background-color: #f8fafc !important;
-            }
-            .total-box {
-                background: #f1f5f9 !important;
-                border: 1px solid #000 !important;
-                color: #000 !important;
-                text-align: right !important;
-                margin-top: 15px !important;
-            }
+            body { background: #ffffff !important; color: #000000 !important; padding: 0 !important; }
+            #splashScreen, .btn-nav, .tab-calc-buttons, .form-grid-calc, p.subtitle, .btn-clear-sec, .col-acoes, th.col-acoes, td.col-acoes, .header-bar { display: none !important; }
+            .print-header { display: flex !important; justify-content: space-between; align-items: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px; }
+            .print-header img { max-height: 50px; width: auto; }
+            .print-header h1 { font-size: 22px; color: #000; margin: 0; text-align: right; }
+            .print-header span { font-size: 12px; color: #555; }
+            .container { margin: 0 !important; padding: 10px !important; max-width: 100% !important; }
+            .table-responsive-container { border: 1px solid #000 !important; background: #fff !important; }
+            table { color: #000 !important; }
+            th { background-color: #f1f5f9 !important; color: #000 !important; border: 1px solid #000 !important; }
+            td { border: 1px solid #000 !important; color: #000 !important; }
+            tr:nth-child(even) { background-color: #f8fafc !important; }
+            .total-box { background: #f1f5f9 !important; border: 1px solid #000 !important; color: #000 !important; text-align: right !important; margin-top: 15px !important; }
         }
     </style>
 </head>
@@ -580,13 +543,12 @@
         <div id="calcGrupoMaquina" class="form-grid-calc">
             <div class="form-group">
                 <label for="search">
-                    Pesquisar Modelo de Máquina (<span id="contadorItensBusca">0</span> itens achados): 
+                    Pesquisar por Código ou Modelo (<span id="contadorItensBusca">0</span> itens achados): 
                     <span id="syncContainer">
                         <span id="loadingStatus">🔄 Sincronizando...</span>
-                        <button type="button" class="btn-sync" onclick="carregarDadosDrive()">🔄 Atualizar</button>
                     </span>
                 </label>
-                <input type="text" id="search" placeholder="Digite para buscar (ex.: SA-430D, Siruba...)" oninput="filtrarModelos()" onfocus="carregarSelectCalculadora(bancoDados);">
+                <input type="text" id="search" placeholder="Digite código ou modelo (ex.: A101, SA-430D...)" oninput="filtrarModelos()" onfocus="carregarSelectCalculadora(bancoDados);">
                 <select id="modeloSelect" size="4" style="margin-top: 5px; height: 90px;"></select>
             </div>
             <div class="form-group">
@@ -594,7 +556,7 @@
                 <input type="number" id="qtd" value="1" min="1" style="height: 40px;">
             </div>
             <div class="form-group">
-                <button class="btn-add" style="height: 40px;" onclick="adicionarItemCarga('maquina')">+ Adicionar Máquina</button>
+                <button class="btn-add" style="height: 40px;" onclick="adicionarItemCarga('maquina')">+ Adicionar Item</button>
             </div>
         </div>
 
@@ -681,43 +643,50 @@
 
         <form id="formMaquina" onsubmit="salvarMaquina(event)">
             <input type="hidden" id="editIndex" value="-1">
+            <input type="hidden" id="editRowIndex" value="">
             <input type="hidden" id="confirmacaoSimularCiente" value="false">
+            <input type="hidden" id="confirmacaoCodigoCiente" value="true">
 
             <div class="form-container">
                 <div class="form-divider">🏷️ Identificação e Quantidade de Volumes</div>
                 <div class="form-row row-2-cols">
                     <div class="form-group">
-                        <label for="marca">Marca / Origem *</label>
+                        <label for="marca">Marca / Origem</label>
                         <input type="text" id="marca" placeholder="Ex.: Siruba, Elgin..." required oninput="validarCampoEmTempoReal(this); verificarModelosParecidos();">
                     </div>
                     <div class="form-group">
-                        <label for="vol">Volumes por Unidade (VOL) - Calculado Automaticamente *</label>
+                        <label for="vol">Vol (Calculado Automaticamente)</label>
                         <input type="number" id="vol" value="1" min="1" step="1" required readonly title="Calculado automaticamente com base nos componentes preenchidos">
                     </div>
                 </div>
 
-                <div class="form-divider">📌 Dados do Cabeçote / Máquina Principal</div>
-                <div class="form-row row-3-cols">
+                <div class="form-divider">📌 Dados da Máquina (Código / Modelo / Peso / Dimensões)</div>
+                <div class="form-row row-custom-unificado">
                     <div class="form-group">
-                        <label for="modelo">Modelo da Máquina *</label>
+                        <label for="codigo">Código</label>
+                        <input type="text" id="codigo" placeholder="Ex.: A101" required oninput="validarCampoEmTempoReal(this); verificarCodigoDuplicado();">
+                        <div id="boxAvisoCodigo" class="box-aviso-codigo"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="modelo">Modelo</label>
                         <input type="text" id="modelo" placeholder="Ex.: SA-430D-01" required oninput="validarCampoEmTempoReal(this); verificarModelosParecidos();">
                         <div id="boxSugestoesModelo" class="box-sugestoes-modelo"></div>
                     </div>
                     <div class="form-group">
-                        <label for="peso">Peso do Cabeçote (kg) *</label>
-                        <input type="text" id="peso" placeholder="Ex.: 110.0" oninput="validarCampoEmTempoReal(this)">
+                        <label for="peso">Peso (kg)</label>
+                        <input type="text" id="peso" placeholder="Ex.: 110.0" oninput="validarCampoEmTempoReal(this); aplicarFiltroNumero(this);" required>
                     </div>
                     <div class="form-group">
-                        <label for="medidas">Dimensões do Cabeçote - C x L x A (cm) *</label>
-                        <input type="text" id="medidas" placeholder="Ex.: 69x38x77" oninput="ajustarFormatoMedida(this); validarCampoEmTempoReal(this)">
-                        <small style="color: #94a3b8; font-size: 11px; margin-top: 2px;">Formato limpo automaticamente (ex: 69x38x77)</small>
+                        <label for="medidas">Dimensões - C x L x A (cm)</label>
+                        <input type="text" id="medidas" placeholder="Ex.: 69X38X77" oninput="ajustarFormatoMedida(this); validarCampoEmTempoReal(this)" required>
+                        <small style="color: #94a3b8; font-size: 11px; margin-top: 2px;">Apenas números e X (ex: 69X38X77)</small>
                     </div>
                 </div>
 
                 <div class="form-divider">📐 Dados da Mesa / Tampo</div>
                 <div class="form-row row-3-cols" id="groupMesa">
                     <div class="form-group">
-                        <label for="mesa">Tipo de Mesa:</label>
+                        <label for="mesa">Modelo</label>
                         <div class="input-clear-wrapper">
                             <input list="listaMesas" id="mesa" placeholder="Selecione ou digite livremente..." oninput="aoAlterarComponente(); validarCampoEmTempoReal(this);" onchange="aoAlterarComponente()" onclick="this.select()">
                             <button type="button" class="btn-clear-input" onclick="limparCampoDatalist('mesa')" title="Limpar campo">✕</button>
@@ -729,19 +698,19 @@
                         <div id="dropdownMesa" class="custom-dropdown-list"></div>
                     </div>
                     <div class="form-group">
-                        <label for="pesoMesa">Peso da Mesa (kg)</label>
-                        <input type="text" id="pesoMesa" placeholder="Ex.: 15.0" oninput="aoAlterarComponente(); validarCampoEmTempoReal(this);">
+                        <label for="pesoMesa">Peso (kg)</label>
+                        <input type="text" id="pesoMesa" placeholder="Ex.: 15.0" oninput="aoAlterarComponente(); validarCampoEmTempoReal(this); aplicarFiltroNumero(this);">
                     </div>
                     <div class="form-group">
-                        <label for="medidasMesa">Dimensões da Mesa - C x L x A (cm)</label>
-                        <input type="text" id="medidasMesa" placeholder="Ex.: 120x70x15" oninput="ajustarFormatoMedida(this); validarCampoEmTempoReal(this)">
+                        <label for="medidasMesa">Dimensões - C x L x A (cm)</label>
+                        <input type="text" id="medidasMesa" placeholder="Ex.: 120X70X15" oninput="ajustarFormatoMedida(this); validarCampoEmTempoReal(this)">
                     </div>
                 </div>
 
                 <div class="form-divider">⚡ Dados do Motor / Acionamento</div>
                 <div class="form-row row-3-cols" id="groupMotor">
                     <div class="form-group">
-                        <label for="motor">Tipo de Motor:</label>
+                        <label for="motor">Modelo</label>
                         <div class="input-clear-wrapper">
                             <input list="listaMotores" id="motor" placeholder="Selecione ou digite livremente..." oninput="aoAlterarComponente(); validarCampoEmTempoReal(this);" onchange="aoAlterarComponente()" onclick="this.select()">
                             <button type="button" class="btn-clear-input" onclick="limparCampoDatalist('motor')" title="Limpar campo">✕</button>
@@ -753,19 +722,19 @@
                         <div id="dropdownMotor" class="custom-dropdown-list"></div>
                     </div>
                     <div class="form-group">
-                        <label for="pesoMotor">Peso do Motor (kg)</label>
-                        <input type="text" id="pesoMotor" placeholder="Ex.: 20.0" oninput="aoAlterarComponente(); validarCampoEmTempoReal(this);">
+                        <label for="pesoMotor">Peso (kg)</label>
+                        <input type="text" id="pesoMotor" placeholder="Ex.: 20.0" oninput="aoAlterarComponente(); validarCampoEmTempoReal(this); aplicarFiltroNumero(this);">
                     </div>
                     <div class="form-group">
-                        <label for="medidasMotor">Dimensões do Motor - C x L x A (cm)</label>
-                        <input type="text" id="medidasMotor" placeholder="Ex.: 15x15x20" oninput="ajustarFormatoMedida(this); validarCampoEmTempoReal(this)">
+                        <label for="medidasMotor">Dimensões - C x L x A (cm)</label>
+                        <input type="text" id="medidasMotor" placeholder="Ex.: 15X15X20" oninput="ajustarFormatoMedida(this); validarCampoEmTempoReal(this)">
                     </div>
                 </div>
 
                 <div class="form-divider">🛍️ Dados de Acessórios / Itens Extras</div>
                 <div class="form-row row-3-cols" id="groupAcessorio">
                     <div class="form-group">
-                        <label for="acessorio">Tipo de Acessórios:</label>
+                        <label for="acessorio">Modelo</label>
                         <div class="input-clear-wrapper">
                             <input list="listaAcessorios" id="acessorio" placeholder="Selecione ou digite livremente..." oninput="aoAlterarComponente(); validarCampoEmTempoReal(this);" onchange="aoAlterarComponente()" onclick="this.select()">
                             <button type="button" class="btn-clear-input" onclick="limparCampoDatalist('acessorio')" title="Limpar campo">✕</button>
@@ -777,12 +746,12 @@
                         <div id="dropdownAcessorio" class="custom-dropdown-list"></div>
                     </div>
                     <div class="form-group">
-                        <label for="pesoAcessorio">Peso do Acessório (kg)</label>
-                        <input type="text" id="pesoAcessorio" placeholder="Ex.: 2.5" oninput="aoAlterarComponente(); validarCampoEmTempoReal(this);">
+                        <label for="pesoAcessorio">Peso (kg)</label>
+                        <input type="text" id="pesoAcessorio" placeholder="Ex.: 2.5" oninput="aoAlterarComponente(); validarCampoEmTempoReal(this); aplicarFiltroNumero(this);">
                     </div>
                     <div class="form-group">
-                        <label for="medidasAcessorio">Dimensões do Acessório - C x L x A (cm)</label>
-                        <input type="text" id="medidasAcessorio" placeholder="Ex.: 10x10x5" oninput="ajustarFormatoMedida(this); validarCampoEmTempoReal(this)">
+                        <label for="medidasAcessorio">Dimensões - C x L x A (cm)</label>
+                        <input type="text" id="medidasAcessorio" placeholder="Ex.: 10X10X5" oninput="ajustarFormatoMedida(this); validarCampoEmTempoReal(this)">
                     </div>
                 </div>
 
@@ -812,7 +781,7 @@
                 <div style="display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-bottom: 15px; background: rgba(0, 0, 0, 0.15); padding: 8px 12px; border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.08);">
                     <div style="flex-grow: 1; display: flex; align-items: center; gap: 10px;">
                         <span style="font-size: 13px; color: #94a3b8; white-space: nowrap;">🔍 Pesquisar:</span>
-                        <input type="text" id="filtroRegistrosTabela" placeholder="Digite modelo, marca ou especificações..." oninput="filtrarTabelaRegistros()" style="background-color: rgba(255, 255, 255, 0.95); color: #0f172a; padding: 6px 10px; font-size: 13px; border-radius: 4px; border: 1px solid #cbd5e1;">
+                        <input type="text" id="filtroRegistrosTabela" placeholder="Digite código, modelo, marca ou especificações..." oninput="filtrarTabelaRegistros()" style="background-color: rgba(255, 255, 255, 0.95); color: #0f172a; padding: 6px 10px; font-size: 13px; border-radius: 4px; border: 1px solid #cbd5e1;">
                     </div>
                     <div id="contadorFiltroDiscreto" style="font-size: 13px; color: #38bdf8; font-weight: bold; white-space: nowrap; background: rgba(56, 189, 248, 0.1); padding: 5px 10px; border-radius: 4px; border: 1px solid rgba(56, 189, 248, 0.2);">
                         0 resultados
@@ -824,16 +793,17 @@
                         <thead>
                             <tr>
                                 <th class="col-num">#</th>
-                                <th style="width: 120px;">Marca / Origem</th>
-                                <th style="width: 180px;">Modelo</th>
-                                <th style="width: 260px;">Dimensões C x L x A (cm)</th>
-                                <th style="width: 60px;">VOL</th>
-                                <th style="width: 150px;">Unitário (Peso / Cubagem)</th>
+                                <th style="width: 110px;">Marca / Origem</th>
+                                <th style="width: 80px;">Código</th>
+                                <th style="width: 150px;">Modelo</th>
+                                <th style="width: 220px;">Peso / Dimensões C x L x A (cm)</th>
+                                <th style="width: 50px;">VOL</th>
+                                <th style="width: 130px;">Total (Peso / Cubagem)</th>
                                 <th class="col-acoes">Ações</th>
                             </tr>
                         </thead>
                         <tbody id="corpoTabelaCadastro">
-                            <tr><td colspan="7" style="text-align: center; color: #cbd5e1;">Carregando registros...</td></tr>
+                            <tr><td colspan="8" style="text-align: center; color: #cbd5e1;">Carregando registros...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -849,11 +819,12 @@
                 <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 6px; margin-bottom: 15px;">
                     <h4 id="tituloFormMesa" style="margin-top:0; color:#38bdf8;">➕ Adicionar Nova Mesa Pré-definida</h4>
                     <input type="hidden" id="editIndexMesa" value="-1">
+                    <input type="hidden" id="editRowIndexMesa" value="">
                     <div class="form-row row-4-cols">
                         <input type="text" id="novaMesaMarca" placeholder="Marca (Ex.: Sansei, Siruba...)">
-                        <input type="text" id="novaMesaNome" placeholder="Nome/Modelo (Ex.: Stand...)">
-                        <input type="text" id="novaMesaPeso" placeholder="Peso (Ex: 28)">
-                        <input type="text" id="novaMesaMedidas" placeholder="Dimensões (Ex.: 123x60x10)" oninput="ajustarFormatoMedida(this)">
+                        <input type="text" id="novaMesaName" placeholder="Modelo (Ex.: Stand...)">
+                        <input type="text" id="novaMesaPeso" placeholder="Peso (Ex: 28)" oninput="aplicarFiltroNumero(this)">
+                        <input type="text" id="novaMesaMedidas" placeholder="Dimensões (Ex.: 123X60X10)" oninput="ajustarFormatoMedida(this)">
                     </div>
                     <div style="margin-top:10px; display:flex; gap:10px;">
                         <button class="btn-add" style="font-size: 12px; padding: 6px 12px;" onclick="salvarMesaPredefinida()" id="btnSalvarMesa">Adicionar Mesa</button>
@@ -866,8 +837,8 @@
                             <tr>
                                 <th class="col-num">#</th>
                                 <th>Marca</th>
-                                <th>Especificação / Nome</th>
-                                <th>Peso Padronizado (kg)</th>
+                                <th>Modelo</th>
+                                <th>Peso (kg)</th>
                                 <th>Dimensões C x L x A (cm)</th>
                                 <th class="col-acoes">Ações</th>
                             </tr>
@@ -887,11 +858,12 @@
                 <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 6px; margin-bottom: 15px;">
                     <h4 id="tituloFormMotor" style="margin-top:0; color:#38bdf8;">➕ Adicionar Novo Motor Pré-definido</h4>
                     <input type="hidden" id="editIndexMotor" value="-1">
+                    <input type="hidden" id="editRowIndexMotor" value="">
                     <div class="form-row row-4-cols">
                         <input type="text" id="novoMotorMarca" placeholder="Marca (Ex.: Ho Hsing, Sansei...)">
-                        <input type="text" id="novoMotorNome" placeholder="Nome/Tipo (Ex.: Direct Drive...)">
-                        <input type="text" id="novoMotorPeso" placeholder="Peso (Ex: 7)">
-                        <input type="text" id="novoMotorMedidas" placeholder="Dimensões (Ex.: 35x29x26)" oninput="ajustarFormatoMedida(this)">
+                        <input type="text" id="novoMotorName" placeholder="Modelo (Ex.: Direct Drive...)">
+                        <input type="text" id="novoMotorPeso" placeholder="Peso (Ex: 7)" oninput="aplicarFiltroNumero(this)">
+                        <input type="text" id="novoMotorMedidas" placeholder="Dimensões (Ex.: 35X29X26)" oninput="ajustarFormatoMedida(this)">
                     </div>
                     <div style="margin-top:10px; display:flex; gap:10px;">
                         <button class="btn-add" style="font-size: 12px; padding: 6px 12px;" onclick="salvarMotorPredefinido()" id="btnSalvarMotor">Adicionar Motor</button>
@@ -904,8 +876,8 @@
                             <tr>
                                 <th class="col-num">#</th>
                                 <th>Marca</th>
-                                <th>Tipo / Nome do Motor</th>
-                                <th>Peso Padronizado (kg)</th>
+                                <th>Modelo</th>
+                                <th>Peso (kg)</th>
                                 <th>Dimensões C x L x A (cm)</th>
                                 <th class="col-acoes">Ações</th>
                             </tr>
@@ -925,11 +897,12 @@
                 <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 6px; margin-bottom: 15px;">
                     <h4 id="tituloFormAcessorio" style="margin-top:0; color:#38bdf8;">➕ Adicionar Novo Acessório Pré-definido</h4>
                     <input type="hidden" id="editIndexAcessorio" value="-1">
+                    <input type="hidden" id="editRowIndexAcessorio" value="">
                     <div class="form-row row-4-cols">
                         <input type="text" id="novoAcessorioMarca" placeholder="Marca (Ex.: Lanmax, Zoje...)">
-                        <input type="text" id="novoAcessorioNome" placeholder="Nome/Acessório (Ex.: Luminária LED...)">
-                        <input type="text" id="novoAcessorioPeso" placeholder="Peso (Ex: 0.5)">
-                        <input type="text" id="novoAcessorioMedidas" placeholder="Dimensões (Ex.: 10x10x5)" oninput="ajustarFormatoMedida(this)">
+                        <input type="text" id="novoAcessorioName" placeholder="Modelo (Ex.: Luminária LED...)">
+                        <input type="text" id="novoAcessorioPeso" placeholder="Peso (Ex: 0.5)" oninput="aplicarFiltroNumero(this)">
+                        <input type="text" id="novoAcessorioMedidas" placeholder="Dimensões (Ex.: 10X10X5)" oninput="ajustarFormatoMedida(this)">
                     </div>
                     <div style="margin-top:10px; display:flex; gap:10px;">
                         <button class="btn-add" style="font-size: 12px; padding: 6px 12px;" onclick="salvarAcessorioPredefinido()" id="btnSalvarAcessorio">Adicionar Acessório</button>
@@ -942,8 +915,8 @@
                             <tr>
                                 <th class="col-num">#</th>
                                 <th>Marca</th>
-                                <th>Nome do Acessório</th>
-                                <th>Peso Padronizado (kg)</th>
+                                <th>Modelo</th>
+                                <th>Peso (kg)</th>
                                 <th>Dimensões C x L x A (cm)</th>
                                 <th class="col-acoes">Ações</th>
                             </tr>
@@ -958,26 +931,14 @@
 </div>
 
 <script>
-    const URL_GOOGLE_SCRIPT = "https://script.google.com/macros/s/AKfycbxTN_-U6qorXAx653kF4uKcfsKp5nmyWGMnltho1iqavrGy_czmWriCAH40oAQT_VuW/exec";
+    const URL_GOOGLE_SCRIPT = "https://script.google.com/macros/s/AKfycbyQM0LQC8khe2tUZmh-aC3T2T3iZwSggXAwczL3IwgzF1dtilPAtaiSNKFX9R9iH9G9/exec";
 
     let bancoDados = [];
+    let bancoMesas = [];
+    let bancoMotores = [];
+    let bancoAcessorios = [];
     let listaCarga = [];
     let scrollPosAnterior = 0;
-
-    let bancoMesas = [
-        { marca: 'Padrão', nome: 'Stand', peso: 28, medidas: '123x60x10' },
-        { marca: 'Padrão', nome: 'Grande', peso: 35, medidas: '143x75x15' }
-    ];
-
-    let bancoMotores = [
-        { marca: 'Economico', nome: 'Economico 550W', peso: 7, medidas: '35x29x26' },
-        { marca: 'Convencional', nome: 'Convencional Clutch', peso: 18, medidas: '43x32x32' }
-    ];
-
-    let bancoAcessorios = [
-        { marca: 'Lanmax', nome: 'Luminária LED Flexível', peso: 0.5, medidas: '10x5x5' },
-        { marca: 'Universal', nome: 'Kit Guia Magnético', peso: 0.2, medidas: '5x5x2' }
-    ];
 
     function parseNum(val) {
         if (!val) return 0;
@@ -987,22 +948,22 @@
     function ajustarFormatoMedida(inputElem) {
         if (!inputElem) return;
         let valor = inputElem.value;
-        
-        // Remove estritamente letras, vírgulas, pontos e espaços vazios extras, mantendo apenas números e os separadores internos
-        valor = valor.replace(/[A-Za-zçÇáéíóúÁÉÍÓÚãõÃÕâêîôûÂÊÎÔÛ,.\s]/g, '');
-        
-        // Substitui caracteres separadores diversos (como *, -, /) por 'x'
-        valor = valor.replace(/[\*\-\/]+/g, 'x');
-        
-        // Remove múltiplos 'x' seguidos
-        valor = valor.replace(/x{2,}/g, 'x');
-        
+        valor = valor.toUpperCase().replace(/[^0-9X]/g, '');
+        valor = valor.replace(/X{2,}/g, 'X');
+        inputElem.value = valor;
+    }
+
+    function aplicarFiltroNumero(inputElem) {
+        if (!inputElem) return;
+        let valor = inputElem.value;
+        valor = valor.replace(/[^0-9.,]/g, '');
+        valor = valor.replace(/([.,].*)[.,]/g, '$1');
         inputElem.value = valor;
     }
 
     function validarPadraoMedida(str) {
         if (!str) return false;
-        const regex = /^\d+x\d+x\d+$/i;
+        const regex = /^\d+X\d+X\d+$/;
         return regex.test(str.trim());
     }
 
@@ -1018,16 +979,13 @@
             inputElem.style.borderColor = '#cbd5e1';
             return;
         }
-        
         let ehValido = true;
         const id = inputElem.id;
-        
         if (id.includes('peso')) {
             ehValido = validarPesoNumerico(val);
         } else if (id.includes('medidas')) {
             ehValido = validarPadraoMedida(val);
         }
-        
         if (!ehValido) {
             inputElem.style.borderColor = '#ef4444';
             inputElem.style.borderWidth = '2px';
@@ -1106,13 +1064,10 @@
         event.stopPropagation();
         const dropId = 'dropdown' + idCampo.charAt(0).toUpperCase() + idCampo.slice(1);
         const dropdownElem = document.getElementById(dropId);
-        
         document.querySelectorAll('.custom-dropdown-list').forEach(d => {
             if (d.id !== dropId) d.style.display = 'none';
         });
-
         if (!dropdownElem) return;
-
         if (dropdownElem.style.display === 'block') {
             dropdownElem.style.display = 'none';
         } else {
@@ -1125,7 +1080,6 @@
                 const labelTexto = `${item.marca ? item.marca + ' - ' : ''}${item.nome}`;
                 return `<div class="custom-dropdown-item" onclick="selecionarItemDropdown('${idCampo}', '${labelTexto.replace(/'/g, "\\'")}')">${labelTexto}</div>`;
             }).join('');
-
             dropdownElem.style.display = 'block';
         }
     }
@@ -1211,40 +1165,76 @@
                 volTotal++;
             }
         }
-        
         document.getElementById('vol').value = volTotal;
+    }
+
+    function verificarCodigoDuplicado() {
+        const codigoInput = document.getElementById('codigo').value.trim().toUpperCase();
+        const boxAviso = document.getElementById('boxAvisoCodigo');
+        const editIndex = parseInt(document.getElementById('editIndex').value);
+
+        if (!codigoInput) {
+            boxAviso.style.display = 'none';
+            boxAviso.innerHTML = '';
+            document.getElementById('confirmacaoCodigoCiente').value = 'true';
+            return;
+        }
+
+        let linhaEncontrada = -1;
+        bancoDados.forEach((item, index) => {
+            if ((item.codigo || '').trim().toUpperCase() === codigoInput) {
+                if (editIndex < 0 || editIndex !== index) {
+                    linhaEncontrada = index + 1;
+                }
+            }
+        });
+
+        if (linhaEncontrada !== -1) {
+            boxAviso.style.display = 'block';
+            boxAviso.innerHTML = `
+                ⚠️ <strong>Atenção:</strong> Já existe um cadastro com este código na <strong>Linha #${linhaEncontrada}</strong>.<br>
+                <button type="button" class="btn-ciente" id="btnCienteCodigo" onclick="confirmarCienteCodigo()">✔ Ciente, Prosseguir</button>
+            `;
+            document.getElementById('confirmacaoCodigoCiente').value = 'false';
+        } else {
+            boxAviso.style.display = 'none';
+            boxAviso.innerHTML = '';
+            document.getElementById('confirmacaoCodigoCiente').value = 'true';
+        }
+    }
+
+    function confirmarCienteCodigo() {
+        const btn = document.getElementById('btnCienteCodigo');
+        if (btn) {
+            btn.innerText = '✔ Ciência Confirmada';
+            btn.classList.add('ciente-ok');
+            document.getElementById('confirmacaoCodigoCiente').value = 'true';
+        }
     }
 
     function verificarModelosParecidos() {
         const termo = document.getElementById('modelo').value.trim().toLowerCase();
         const boxSugestoes = document.getElementById('boxSugestoesModelo');
-
         if (!termo || termo.length < 2) {
             boxSugestoes.style.display = 'none';
             boxSugestoes.innerHTML = '';
             document.getElementById('confirmacaoSimularCiente').value = 'false';
             return;
         }
-
-        let similaresHtml = [];
+        let similaresItens = [];
         bancoDados.forEach((item, index) => {
             const mod = (item.modelo || '').toLowerCase();
             if (mod.includes(termo) || termo.includes(mod)) {
                 const linhaReal = index + 1;
-                similaresHtml.push(`
-                    <div class="item-similar-row">
-                        <span>Linha <strong>#${linhaReal}</strong> — Modelo: <strong>${item.modelo}</strong> (Marca: ${item.marca || 'N/D'})</span>
-                        <button type="button" class="btn-ciente" id="btnCiente_${index}" onclick="confirmarCienteSimilar(${index})">✔ V - Ciente</button>
-                    </div>
-                `);
+                similaresItens.push(`<li>Linha <strong>#${linhaReal}</strong> — Cód: <strong>${item.codigo || '-'}</strong> | Mod: <strong>${item.modelo}</strong></li>`);
             }
         });
-
-        if (similaresHtml.length > 0) {
+        if (similaresItens.length > 0) {
             boxSugestoes.style.display = 'block';
             boxSugestoes.innerHTML = `
-                <strong>⚠️ Atenção: Existem cadastros de máquinas similares na base:</strong>
-                ${similaresHtml.join('')}
+                <strong>⚠️ Atenção: Modelos similares encontrados na base:</strong>
+                <ul>${similaresItens.join('')}</ul>
+                <button type="button" class="btn-ciente" id="btnCienteGlobal" onclick="confirmarCienteSimilar()">✔ Ciente da Similaridade</button>
             `;
             document.getElementById('confirmacaoSimularCiente').value = 'false';
         } else {
@@ -1254,10 +1244,10 @@
         }
     }
 
-    function confirmarCienteSimilar(index) {
-        const btn = document.getElementById(`btnCiente_${index}`);
+    function confirmarCienteSimilar() {
+        const btn = document.getElementById('btnCienteGlobal');
         if (btn) {
-            btn.innerText = '✔ Confirmado';
+            btn.innerText = '✔ Ciência Confirmada';
             btn.classList.add('ciente-ok');
             document.getElementById('confirmacaoSimularCiente').value = 'true';
         }
@@ -1278,7 +1268,6 @@
         const datalistMesa = document.getElementById('listaMesas');
         const datalistMotor = document.getElementById('listaMotores');
         const datalistAcessorio = document.getElementById('listaAcessorios');
-
         const selectMesaAvulsa = document.getElementById('selectMesaAvulsa');
         const selectMotorAvulso = document.getElementById('selectMotorAvulso');
         const selectAcessorioAvulso = document.getElementById('selectAcessorioAvulso');
@@ -1314,37 +1303,43 @@
 
     function salvarMesaPredefinida() {
         const editIdx = parseInt(document.getElementById('editIndexMesa').value);
+        const editRowIndexVal = document.getElementById('editRowIndexMesa').value;
         const marca = document.getElementById('novaMesaMarca').value.trim();
-        const nome = document.getElementById('novaMesaNome').value.trim();
+        const nome = document.getElementById('novaMesaName').value.trim();
         const pesoStr = document.getElementById('novaMesaPeso').value;
         const medidas = document.getElementById('novaMesaMedidas').value.trim();
 
         if (!nome || !validarPesoNumerico(pesoStr) || !validarPadraoMedida(medidas)) {
-            alert('Erro de cadastro: Preencha o nome, verifique se o peso contém apenas números e se as medidas estão no padrão limpo (ex: 123x60x10).');
+            alert('Erro de cadastro: Preencha o modelo, verifique se o peso contém apenas números e se as medidas estão no padrão (ex: 123X60X10).');
             return;
         }
-
         const peso = parseNum(pesoStr);
-        if (editIdx >= 0) {
-            bancoMesas[editIdx] = { marca: marca || 'Padrão', nome, peso, medidas };
-            alert('Mesa atualizada!');
-        } else {
-            bancoMesas.push({ marca: marca || 'Padrão', nome, peso, medidas });
-        }
+        const acaoRequisicao = editIdx >= 0 ? 'editMesa' : 'createMesa';
+
+        let url = `${URL_GOOGLE_SCRIPT}?action=${acaoRequisicao}&marca=${encodeURIComponent(marca || 'PADRÃO')}&nome=${encodeURIComponent(nome)}&peso=${peso}&medidas=${encodeURIComponent(medidas)}&callback=callbackCarregarDados&t=${Date.now()}`;
+        if (editRowIndexVal) url += `&rowIndex=${editRowIndexVal}`;
+
+        const scriptAntigo = document.getElementById('jsonpScriptSalvarMesa');
+        if (scriptAntigo) scriptAntigo.remove();
+        const script = document.createElement('script');
+        script.id = 'jsonpScriptSalvarMesa';
+        script.src = url;
+        document.body.appendChild(script);
 
         cancelarEdicaoMesa();
-        renderizarDatalistsEFormularios();
+        alert(editIdx >= 0 ? 'Mesa atualizada com sucesso!' : 'Nova mesa cadastrada com sucesso!');
+        setTimeout(carregarDadosDrive, 1000);
     }
 
     function editarMesaPredefinida(idx) {
         const m = bancoMesas[idx];
         if (!m) return;
         document.getElementById('editIndexMesa').value = idx;
+        document.getElementById('editRowIndexMesa').value = m.rowIndex || '';
         document.getElementById('novaMesaMarca').value = m.marca || '';
-        document.getElementById('novaMesaNome').value = m.nome || '';
+        document.getElementById('novaMesaName').value = m.nome || '';
         document.getElementById('novaMesaPeso').value = m.peso || 0;
         document.getElementById('novaMesaMedidas').value = m.medidas || '';
-
         document.getElementById('tituloFormMesa').innerText = '✏️ Editar Mesa Pré-definida';
         document.getElementById('btnSalvarMesa').innerText = 'Salvar Alteração';
         document.getElementById('btnCancelMesa').style.display = 'inline-block';
@@ -1352,20 +1347,28 @@
 
     function cancelarEdicaoMesa() {
         document.getElementById('editIndexMesa').value = '-1';
+        document.getElementById('editRowIndexMesa').value = '';
         document.getElementById('novaMesaMarca').value = '';
-        document.getElementById('novaMesaNome').value = '';
+        document.getElementById('novaMesaName').value = '';
         document.getElementById('novaMesaPeso').value = '';
         document.getElementById('novaMesaMedidas').value = '';
-
         document.getElementById('tituloFormMesa').innerText = '➕ Adicionar Nova Mesa Pré-definida';
         document.getElementById('btnSalvarMesa').innerText = 'Adicionar Mesa';
         document.getElementById('btnCancelMesa').style.display = 'none';
     }
 
     function removerMesaPredefinida(idx) {
-        if (confirm('Deseja excluir esta mesa?')) {
-            bancoMesas.splice(idx, 1);
-            renderizarDatalistsEFormularios();
+        const item = bancoMesas[idx];
+        if (item && confirm(`Deseja excluir a mesa "${item.nome}"?`)) {
+            const rowIndex = item.rowIndex;
+            const scriptAntigo = document.getElementById('jsonpScriptDeleteMesa');
+            if (scriptAntigo) scriptAntigo.remove();
+            
+            const script = document.createElement('script');
+            script.id = 'jsonpScriptDeleteMesa';
+            script.src = `${URL_GOOGLE_SCRIPT}?action=deleteMesa&rowIndex=${rowIndex}&callback=callbackCarregarDados&t=${Date.now()}`;
+            document.body.appendChild(script);
+            setTimeout(carregarDadosDrive, 1000);
         }
     }
 
@@ -1373,7 +1376,6 @@
         const corpo = document.getElementById('corpoTabelaMesas');
         document.getElementById('tituloRegistrosMesas').innerText = `📐 Registro de Mesas (${bancoMesas.length})`;
         if (!corpo) return;
-
         corpo.innerHTML = bancoMesas.map((m, idx) => `
             <tr>
                 <td class="col-num">${idx + 1}</td>
@@ -1391,37 +1393,43 @@
 
     function salvarMotorPredefinido() {
         const editIdx = parseInt(document.getElementById('editIndexMotor').value);
+        const editRowIndexVal = document.getElementById('editRowIndexMotor').value;
         const marca = document.getElementById('novoMotorMarca').value.trim();
-        const nome = document.getElementById('novoMotorNome').value.trim();
+        const nome = document.getElementById('novoMotorName').value.trim();
         const pesoStr = document.getElementById('novoMotorPeso').value;
         const medidas = document.getElementById('novoMotorMedidas').value.trim();
 
         if (!nome || !validarPesoNumerico(pesoStr) || !validarPadraoMedida(medidas)) {
-            alert('Erro de cadastro: Preencha o nome, verifique se o peso contém apenas números e se as medidas estão no padrão limpo.');
+            alert('Erro de cadastro: Preencha o modelo, verifique se o peso contém apenas números e se as medidas estão no padrão.');
             return;
         }
-
         const peso = parseNum(pesoStr);
-        if (editIdx >= 0) {
-            bancoMotores[editIdx] = { marca: marca || 'Padrão', nome, peso, medidas };
-            alert('Motor atualizado!');
-        } else {
-            bancoMotores.push({ marca: marca || 'Padrão', nome, peso, medidas });
-        }
+        const acaoRequisicao = editIdx >= 0 ? 'editMotor' : 'createMotor';
+
+        let url = `${URL_GOOGLE_SCRIPT}?action=${acaoRequisicao}&marca=${encodeURIComponent(marca || 'PADRÃO')}&nome=${encodeURIComponent(nome)}&peso=${peso}&medidas=${encodeURIComponent(medidas)}&callback=callbackCarregarDados&t=${Date.now()}`;
+        if (editRowIndexVal) url += `&rowIndex=${editRowIndexVal}`;
+
+        const scriptAntigo = document.getElementById('jsonpScriptSalvarMotor');
+        if (scriptAntigo) scriptAntigo.remove();
+        const script = document.createElement('script');
+        script.id = 'jsonpScriptSalvarMotor';
+        script.src = url;
+        document.body.appendChild(script);
 
         cancelarEdicaoMotor();
-        renderizarDatalistsEFormularios();
+        alert(editIdx >= 0 ? 'Motor atualizado com sucesso!' : 'Novo motor cadastrado com sucesso!');
+        setTimeout(carregarDadosDrive, 1000);
     }
 
     function editarMotorPredefinido(idx) {
         const m = bancoMotores[idx];
         if (!m) return;
         document.getElementById('editIndexMotor').value = idx;
+        document.getElementById('editRowIndexMotor').value = m.rowIndex || '';
         document.getElementById('novoMotorMarca').value = m.marca || '';
-        document.getElementById('novoMotorNome').value = m.nome || '';
+        document.getElementById('novoMotorName').value = m.nome || '';
         document.getElementById('novoMotorPeso').value = m.peso || 0;
         document.getElementById('novoMotorMedidas').value = m.medidas || '';
-
         document.getElementById('tituloFormMotor').innerText = '✏️ Editar Motor Pré-definido';
         document.getElementById('btnSalvarMotor').innerText = 'Salvar Alteração';
         document.getElementById('btnCancelMotor').style.display = 'inline-block';
@@ -1429,20 +1437,28 @@
 
     function cancelarEdicaoMotor() {
         document.getElementById('editIndexMotor').value = '-1';
+        document.getElementById('editRowIndexMotor').value = '';
         document.getElementById('novoMotorMarca').value = '';
-        document.getElementById('novoMotorNome').value = '';
+        document.getElementById('novoMotorName').value = '';
         document.getElementById('novoMotorPeso').value = '';
         document.getElementById('novoMotorMedidas').value = '';
-
         document.getElementById('tituloFormMotor').innerText = '➕ Adicionar Novo Motor Pré-definido';
         document.getElementById('btnSalvarMotor').innerText = 'Adicionar Motor';
         document.getElementById('btnCancelMotor').style.display = 'none';
     }
 
     function removerMotorPredefinido(idx) {
-        if (confirm('Deseja excluir este motor?')) {
-            bancoMotores.splice(idx, 1);
-            renderizarDatalistsEFormularios();
+        const item = bancoMotores[idx];
+        if (item && confirm(`Deseja excluir o motor "${item.nome}"?`)) {
+            const rowIndex = item.rowIndex;
+            const scriptAntigo = document.getElementById('jsonpScriptDeleteMotor');
+            if (scriptAntigo) scriptAntigo.remove();
+            
+            const script = document.createElement('script');
+            script.id = 'jsonpScriptDeleteMotor';
+            script.src = `${URL_GOOGLE_SCRIPT}?action=deleteMotor&rowIndex=${rowIndex}&callback=callbackCarregarDados&t=${Date.now()}`;
+            document.body.appendChild(script);
+            setTimeout(carregarDadosDrive, 1000);
         }
     }
 
@@ -1450,7 +1466,6 @@
         const corpo = document.getElementById('corpoTabelaMotores');
         document.getElementById('tituloRegistrosMotores').innerText = `⚡ Registro de Motores (${bancoMotores.length})`;
         if (!corpo) return;
-
         corpo.innerHTML = bancoMotores.map((m, idx) => `
             <tr>
                 <td class="col-num">${idx + 1}</td>
@@ -1459,8 +1474,8 @@
                 <td>${m.peso} kg</td>
                 <td>${formatarMedidaComCubagem(m.medidas)}</td>
                 <td class="col-acoes">
-                    <button class="btn-edit-sm" onclick="editarMotorPredefinida(${idx})">Editar</button>
-                    <button class="btn-danger-sm" onclick="removerMotorPredefinida(${idx})">Excluir</button>
+                    <button class="btn-edit-sm" onclick="editarMotorPredefinido(${idx})">Editar</button>
+                    <button class="btn-danger-sm" onclick="removerMotorPredefinido(${idx})">Excluir</button>
                 </td>
             </tr>
         `).join('');
@@ -1468,37 +1483,43 @@
 
     function salvarAcessorioPredefinido() {
         const editIdx = parseInt(document.getElementById('editIndexAcessorio').value);
+        const editRowIndexVal = document.getElementById('editRowIndexAcessorio').value;
         const marca = document.getElementById('novoAcessorioMarca').value.trim();
-        const nome = document.getElementById('novoAcessorioNome').value.trim();
+        const nome = document.getElementById('novoAcessorioName').value.trim();
         const pesoStr = document.getElementById('novoAcessorioPeso').value;
         const medidas = document.getElementById('novoAcessorioMedidas').value.trim();
 
         if (!nome || !validarPesoNumerico(pesoStr) || !validarPadraoMedida(medidas)) {
-            alert('Erro de cadastro: Preencha o nome, verifique se o peso contém apenas números e se as medidas estão no padrão limpo.');
+            alert('Erro de cadastro: Preencha o modelo, verifique se o peso contém apenas números e se as medidas estão no padrão.');
             return;
         }
-
         const peso = parseNum(pesoStr);
-        if (editIdx >= 0) {
-            bancoAcessorios[editIdx] = { marca: marca || 'Padrão', nome, peso, medidas };
-            alert('Acessório atualizado!');
-        } else {
-            bancoAcessorios.push({ marca: marca || 'Padrão', nome, peso, medidas });
-        }
+        const acaoRequisicao = editIdx >= 0 ? 'editAcessorio' : 'createAcessorio';
+
+        let url = `${URL_GOOGLE_SCRIPT}?action=${acaoRequisicao}&marca=${encodeURIComponent(marca || 'PADRÃO')}&nome=${encodeURIComponent(nome)}&peso=${peso}&medidas=${encodeURIComponent(medidas)}&callback=callbackCarregarDados&t=${Date.now()}`;
+        if (editRowIndexVal) url += `&rowIndex=${editRowIndexVal}`;
+
+        const scriptAntigo = document.getElementById('jsonpScriptSalvarAcessorio');
+        if (scriptAntigo) scriptAntigo.remove();
+        const script = document.createElement('script');
+        script.id = 'jsonpScriptSalvarAcessorio';
+        script.src = url;
+        document.body.appendChild(script);
 
         cancelarEdicaoAcessorio();
-        renderizarDatalistsEFormularios();
+        alert(editIdx >= 0 ? 'Acessório atualizado com sucesso!' : 'Novo acessório cadastrado com sucesso!');
+        setTimeout(carregarDadosDrive, 1000);
     }
 
     function editarAcessorioPredefinido(idx) {
         const a = bancoAcessorios[idx];
         if (!a) return;
         document.getElementById('editIndexAcessorio').value = idx;
+        document.getElementById('editRowIndexAcessorio').value = a.rowIndex || '';
         document.getElementById('novoAcessorioMarca').value = a.marca || '';
-        document.getElementById('novoAcessorioNome').value = a.nome || '';
+        document.getElementById('novoAcessorioName').value = a.nome || '';
         document.getElementById('novoAcessorioPeso').value = a.peso || 0;
         document.getElementById('novoAcessorioMedidas').value = a.medidas || '';
-
         document.getElementById('tituloFormAcessorio').innerText = '✏️ Editar Acessório Pré-definido';
         document.getElementById('btnSalvarAcessorio').innerText = 'Salvar Alteração';
         document.getElementById('btnCancelAcessorio').style.display = 'inline-block';
@@ -1506,20 +1527,28 @@
 
     function cancelarEdicaoAcessorio() {
         document.getElementById('editIndexAcessorio').value = '-1';
+        document.getElementById('editRowIndexAcessorio').value = '';
         document.getElementById('novoAcessorioMarca').value = '';
-        document.getElementById('novoAcessorioNome').value = '';
+        document.getElementById('novoAcessorioName').value = '';
         document.getElementById('novoAcessorioPeso').value = '';
         document.getElementById('novoAcessorioMedidas').value = '';
-
         document.getElementById('tituloFormAcessorio').innerText = '➕ Adicionar Novo Acessório Pré-definido';
         document.getElementById('btnSalvarAcessorio').innerText = 'Adicionar Acessório';
         document.getElementById('btnCancelAcessorio').style.display = 'none';
     }
 
     function removerAcessorioPredefinido(idx) {
-        if (confirm('Deseja excluir este acessório?')) {
-            bancoAcessorios.splice(idx, 1);
-            renderizarDatalistsEFormularios();
+        const item = bancoAcessorios[idx];
+        if (item && confirm(`Deseja excluir o acessório "${item.nome}"?`)) {
+            const rowIndex = item.rowIndex;
+            const scriptAntigo = document.getElementById('jsonpScriptDeleteAcessorio');
+            if (scriptAntigo) scriptAntigo.remove();
+            
+            const script = document.createElement('script');
+            script.id = 'jsonpScriptDeleteAcessorio';
+            script.src = `${URL_GOOGLE_SCRIPT}?action=deleteAcessorio&rowIndex=${rowIndex}&callback=callbackCarregarDados&t=${Date.now()}`;
+            document.body.appendChild(script);
+            setTimeout(carregarDadosDrive, 1000);
         }
     }
 
@@ -1527,7 +1556,6 @@
         const corpo = document.getElementById('corpoTabelaAcessorios');
         document.getElementById('tituloRegistrosAcessorios').innerText = `🛍️ Registro de Acessórios (${bancoAcessorios.length})`;
         if (!corpo) return;
-
         corpo.innerHTML = bancoAcessorios.map((a, idx) => `
             <tr>
                 <td class="col-num">${idx + 1}</td>
@@ -1547,7 +1575,6 @@
         const fill = document.getElementById('splashProgressFill');
         const statusText = document.getElementById('splashStatusText');
         const subText = document.getElementById('splashSubText');
-        
         if (fill) fill.style.width = `${porcentagem}%`;
         if (statusText) statusText.innerText = `${porcentagem}%`;
         if (subText && submensagem) subText.innerText = submensagem;
@@ -1559,20 +1586,27 @@
             atualizarProgressoSplash(100, 'Sistema pronto para uso!');
             setTimeout(() => {
                 splash.style.opacity = '0';
-                setTimeout(() => {
-                    splash.style.display = 'none';
-                }, 500);
+                setTimeout(() => { splash.style.display = 'none'; }, 500);
             }, 300);
         }
     }
 
     function callbackCarregarDados(data) {
         const status = document.getElementById('loadingStatus');
-        if (data && Array.isArray(data)) {
-            bancoDados = data;
+        if (data && typeof data === 'object') {
+            if (Array.isArray(data)) {
+                bancoDados = data;
+            } else {
+                if (data.maquinas) bancoDados = data.maquinas;
+                if (data.mesas) bancoMesas = data.mesas;
+                if (data.motores) bancoMotores = data.motores;
+                if (data.acessorios) bancoAcessorios = data.acessorios;
+            }
+
             if (status) { status.innerText = '✅ Base sincronizada'; status.style.color = '#4ade80'; }
             carregarSelectCalculadora(bancoDados);
             atualizarTabelaCadastro();
+            renderizarDatalistsEFormularios();
             fecharSplashScreen();
         } else {
             if (status) { status.innerText = '⚠️ Reconectando...'; status.style.color = '#f59e0b'; }
@@ -1584,27 +1618,23 @@
     function carregarDadosDrive() {
         const status = document.getElementById('loadingStatus');
         if (status) { status.innerText = '🔄 Sincronizando...'; status.style.color = '#38bdf8'; }
-
         atualizarProgressoSplash(40, 'Buscando registros na nuvem...');
-
         const scriptAntigo = document.getElementById('jsonpScript');
         if (scriptAntigo) scriptAntigo.remove();
-
         const script = document.createElement('script');
         script.id = 'jsonpScript';
         script.src = `${URL_GOOGLE_SCRIPT}?callback=callbackCarregarDados&t=${Date.now()}`;
         document.body.appendChild(script);
     }
 
-    async function salvarMaquina(e) {
+    function salvarMaquina(e) {
         e.preventDefault();
-        
         const boxErros = document.getElementById('boxErrosCadastro');
         let erros = [];
 
+        const codigoVal = document.getElementById('codigo').value.trim();
         const marcaVal = document.getElementById('marca').value.trim();
         const modeloVal = document.getElementById('modelo').value.trim();
-        
         const pesoCabStr = document.getElementById('peso').value;
         const medidasCab = document.getElementById('medidas').value.trim();
 
@@ -1621,41 +1651,22 @@
         const medidasAcessorio = document.getElementById('medidasAcessorio').value.trim();
 
         const cienteSimiliarVal = document.getElementById('confirmacaoSimularCiente').value;
+        const cienteCodigoVal = document.getElementById('confirmacaoCodigoCiente').value;
         const boxSugestoes = document.getElementById('boxSugestoesModelo');
+        const boxAvisoCodigo = document.getElementById('boxAvisoCodigo');
 
+        if (!codigoVal) erros.push("• O Código é obrigatório.");
         if (!marcaVal) erros.push("• A Marca / Origem é obrigatória.");
-        if (!modeloVal) erros.push("• O Modelo da Máquina é obrigatório.");
-
-        if (!validarPesoNumerico(pesoCabStr)) {
-            erros.push("• O Peso do Cabeçote é obrigatório e deve conter apenas números.");
-        }
-        if (!validarPadraoMedida(medidasCab)) {
-            erros.push("• As Dimensões do Cabeçote devem estar limpas e no formato C x L x A (ex: 69x38x77).");
-        }
-
-        const mesaTemPreenchimento = (nomeMesaVal !== "" || pesoMesaStr !== "" || medidasMesa !== "");
-        if (mesaTemPreenchimento) {
-            if (!nomeMesaVal) erros.push("• O Tipo de Mesa é obrigatório.");
-            if (!validarPesoNumerico(pesoMesaStr)) erros.push("• O Peso da Mesa é obrigatório.");
-            if (!validarPadraoMedida(medidasMesa)) erros.push("• As Dimensões da Mesa devem estar no formato correto.");
-        }
-
-        const motorTemPreenchimento = (nomeMotorVal !== "" || pesoMotorStr !== "" || medidasMotor !== "");
-        if (motorTemPreenchimento) {
-            if (!nomeMotorVal) erros.push("• O Tipo de Motor é obrigatório.");
-            if (!validarPesoNumerico(pesoMotorStr)) erros.push("• O Peso do Motor é obrigatório.");
-            if (!validarPadraoMedida(medidasMotor)) erros.push("• As Dimensões do Motor devem estar no formato correto.");
-        }
-
-        const acessorioTemPreenchimento = (nomeAcessorioVal !== "" || pesoAcessorioStr !== "" || medidasAcessorio !== "");
-        if (acessorioTemPreenchimento) {
-            if (!nomeAcessorioVal) erros.push("• O Tipo de Acessório é obrigatório.");
-            if (!validarPesoNumerico(pesoAcessorioStr)) erros.push("• O Peso do Acessório é obrigatório.");
-            if (!validarPadraoMedida(medidasAcessorio)) erros.push("• As Dimensões do Acessório devem estar no formato correto.");
-        }
+        if (!modeloVal) erros.push("• O Modelo é obrigatório.");
+        if (!validarPesoNumerico(pesoCabStr)) erros.push("• O Peso é obrigatório e deve conter apenas números.");
+        if (!validarPadraoMedida(medidasCab)) erros.push("• As Dimensões devem estar limpas e no formato C x L x A (ex: 69X38X77).");
 
         if (boxSugestoes.style.display === 'block' && cienteSimiliarVal !== 'true') {
             erros.push("• Confirme a ciência do modelo similar existente para prosseguir.");
+        }
+
+        if (boxAvisoCodigo.style.display === 'block' && cienteCodigoVal !== 'true') {
+            erros.push("• Confirme a ciência do código duplicado existente para prosseguir.");
         }
 
         if (erros.length > 0) {
@@ -1669,63 +1680,43 @@
         }
 
         const editIndex = parseInt(document.getElementById('editIndex').value);
+        const editRowIndexVal = document.getElementById('editRowIndex').value;
         
         const inputsTravados = document.querySelectorAll('#formMaquina input:disabled');
         inputsTravados.forEach(i => i.removeAttribute('disabled'));
 
-        const maquinaDados = {
-            marca: marcaVal,
-            modelo: modeloVal,
-            peso: parseNum(pesoCabStr),
-            medidas: medidasCab,
-            mesa: nomeMesaVal,
-            pesoMesa: parseNum(pesoMesaStr),
-            medidasMesa: medidasMesa,
-            motor: nomeMotorVal,
-            pesoMotor: parseNum(pesoMotorStr),
-            medidasMotor: medidasMotor,
-            acessorio: nomeAcessorioVal,
-            pesoAcessorio: parseNum(pesoAcessorioStr),
-            medidasAcessorio: medidasAcessorio,
-            vol: parseInt(document.getElementById('vol').value, 10) || 1,
-            infoAdd: document.getElementById('infoAdd').value.trim()
-        };
+        const acaoRequisicao = editIndex >= 0 ? 'edit' : 'create';
 
         const btn = document.getElementById('btnSalvar');
         btn.disabled = true;
+        btn.innerText = editIndex >= 0 ? '⏳ Atualizando...' : '⏳ Gravando...';
 
-        if (editIndex >= 0) {
-            btn.innerText = '⏳ Atualizando...';
-            const rowIndex = editIndex + 1;
-            const script = document.createElement('script');
-            const dataStr = encodeURIComponent(JSON.stringify(maquinaDados));
-            script.src = `${URL_GOOGLE_SCRIPT}?action=edit&rowIndex=${rowIndex}&data=${dataStr}&callback=callbackCarregarDados&t=${Date.now()}`;
-            document.body.appendChild(script);
-            alert('Registro alterado com sucesso!');
-        } else {
-            btn.innerText = '⏳ Gravando...';
-            try {
-                await fetch(URL_GOOGLE_SCRIPT, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(maquinaDados)
-                });
-                document.getElementById('formMaquina').reset();
-                aoAlterarComponente();
-                alert('Novo registro cadastrado com sucesso!');
-                setTimeout(carregarDadosDrive, 1500);
-            } catch (err) { alert('Falha ao gravar: ' + err.message); }
-        }
+        let url = `${URL_GOOGLE_SCRIPT}?action=${acaoRequisicao}&codigo=${encodeURIComponent(codigoVal)}&marca=${encodeURIComponent(marcaVal)}&modelo=${encodeURIComponent(modeloVal)}&peso=${parseNum(pesoCabStr)}&medidas=${encodeURIComponent(medidasCab)}&mesa=${encodeURIComponent(nomeMesaVal)}&pesoMesa=${parseNum(pesoMesaStr)}&medidasMesa=${encodeURIComponent(medidasMesa)}&motor=${encodeURIComponent(nomeMotorVal)}&pesoMotor=${parseNum(pesoMotorStr)}&medidasMotor=${encodeURIComponent(medidasMotor)}&acessorio=${encodeURIComponent(nomeAcessorioVal)}&pesoAcessorio=${parseNum(pesoAcessorioStr)}&medidasAcessorio=${encodeURIComponent(medidasAcessorio)}&vol=${parseInt(document.getElementById('vol').value, 10) || 1}&infoAdd=${encodeURIComponent(document.getElementById('infoAdd').value.trim())}&callback=callbackCarregarDados&t=${Date.now()}`;
+
+        if (editRowIndexVal) url += `&rowIndex=${editRowIndexVal}`;
+
+        const scriptAntigo = document.getElementById('jsonpScriptSalvarMaquina');
+        if (scriptAntigo) scriptAntigo.remove();
+        const script = document.createElement('script');
+        script.id = 'jsonpScriptSalvarMaquina';
+        script.src = url;
+        document.body.appendChild(script);
+
+        document.getElementById('formMaquina').reset();
+        aoAlterarComponente();
+        alert(editIndex >= 0 ? 'Registro alterado e sobrescrito com sucesso!' : 'Novo registro cadastrado com sucesso!');
+        setTimeout(carregarDadosDrive, 1000);
 
         btn.disabled = false;
         btn.innerText = '➕ Cadastrar no Banco de Dados';
         document.getElementById('btnCancelarEdicao').style.display = 'none';
         document.getElementById('editIndex').value = '-1';
+        document.getElementById('editRowIndex').value = '';
         document.getElementById('boxSugestoesModelo').style.display = 'none';
+        document.getElementById('boxAvisoCodigo').style.display = 'none';
         document.getElementById('confirmacaoSimularCiente').value = 'false';
+        document.getElementById('confirmacaoCodigoCiente').value = 'true';
         aoAlterarComponente();
-        
         window.scrollTo({ top: scrollPosAnterior, behavior: 'smooth' });
     }
 
@@ -1738,7 +1729,6 @@
         const tituloRegistros = document.getElementById('tituloRegistrosMaquinas');
         const contadorFiltroDiscreto = document.getElementById('contadorFiltroDiscreto');
         const termoBuscaInput = document.getElementById('filtroRegistrosTabela');
-        
         if (!corpo) return;
 
         const termoBusca = termoBuscaInput ? termoBuscaInput.value.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '') : '';
@@ -1746,32 +1736,18 @@
 
         const dadosFiltrados = bancoDados.map((m, indexOriginal) => ({ m, indexOriginal })).filter(({ m }) => {
             if (palavrasBusca.length === 0) return true;
-            
             const textoComposicao = [
-                m.marca || '',
-                m.modelo || '',
-                m.mesa || '',
-                m.motor || '',
-                m.acessorio || '',
-                m.medidas || '',
-                m.medidasMesa || '',
-                m.medidasMotor || '',
-                m.medidasAcessorio || '',
-                m.infoAdd || ''
+                m.codigo || '', m.marca || '', m.modelo || '', m.mesa || '', m.motor || '', m.acessorio || '',
+                m.medidas || '', m.medidasMesa || '', m.medidasMotor || '', m.medidasAcessorio || '', m.infoAdd || ''
             ].join(' ').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-
             return palavrasBusca.every(palavra => textoComposicao.includes(palavra));
         });
 
-        if (tituloRegistros) {
-            tituloRegistros.innerHTML = `📋 Registro de Máquinas (${bancoDados.length})`;
-        }
-        if (contadorFiltroDiscreto) {
-            contadorFiltroDiscreto.innerHTML = `${dadosFiltrados.length} resultado${dadosFiltrados.length === 1 ? '' : 's'}`;
-        }
+        if (tituloRegistros) tituloRegistros.innerHTML = `📋 Registro de Máquinas (${bancoDados.length})`;
+        if (contadorFiltroDiscreto) contadorFiltroDiscreto.innerHTML = `${dadosFiltrados.length} resultado${dadosFiltrados.length === 1 ? '' : 's'}`;
 
         if (dadosFiltrados.length === 0) {
-            corpo.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #cbd5e1;">Nenhum registro localizado para a pesquisa.</td></tr>`;
+            corpo.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #cbd5e1;">Nenhum registro localizado para a pesquisa.</td></tr>`;
             return;
         }
 
@@ -1780,20 +1756,32 @@
             const cubagemTotalUnitario = calcularCubagemUnitariaTotal(m);
             const temErroCadastro = verificarCadastroIncorreto(m);
 
-            let htmlMedidas = [];
-            if (m.medidas) htmlMedidas.push(`<b>Máq.:</b> ${formatarMedidaComCubagem(m.medidas)}`);
-            if (m.medidasMesa) htmlMedidas.push(`<b>Mesa:</b> ${formatarMedidaComCubagem(m.medidasMesa)}`);
-            if (m.medidasMotor) htmlMedidas.push(`<b>Motor:</b> ${formatarMedidaComCubagem(m.medidasMotor)}`);
-            if (m.medidasAcessorio) htmlMedidas.push(`<b>Acess.:</b> ${formatarMedidaComCubagem(m.medidasAcessorio)}`);
-
+            let htmlDetalhes = [];
+            if (m.medidas) {
+                const pesoPrinc = parseNum(m.peso);
+                htmlDetalhes.push(`<b>Princ.:</b> ${pesoPrinc > 0 ? pesoPrinc.toFixed(2).replace('.', ',') + ' kg, ' : ''}${formatarMedidaComCubagem(m.medidas)}`);
+            }
+            if (m.medidasMesa) {
+                const pesoM = parseNum(m.pesoMesa);
+                htmlDetalhes.push(`<b>Mesa:</b> ${pesoM > 0 ? pesoM.toFixed(2).replace('.', ',') + ' kg, ' : ''}${formatarMedidaComCubagem(m.medidasMesa)}`);
+            }
+            if (m.medidasMotor) {
+                const pesoMot = parseNum(m.pesoMotor);
+                htmlDetalhes.push(`<b>Motor:</b> ${pesoMot > 0 ? pesoMot.toFixed(2).replace('.', ',') + ' kg, ' : ''}${formatarMedidaComCubagem(m.medidasMotor)}`);
+            }
+            if (m.medidasAcessorio) {
+                const pesoAc = parseNum(m.pesoAcessorio);
+                htmlDetalhes.push(`<b>Acess.:</b> ${pesoAc > 0 ? pesoAc.toFixed(2).replace('.', ',') + ' kg, ' : ''}${formatarMedidaComCubagem(m.medidasAcessorio)}`);
+            }
             let alertaErroHtml = temErroCadastro ? `<br><span style="color: #fca5a5; font-size: 11px; font-weight: bold;">⚠️ Erro no Cadastro (Peso/Medidas)</span>` : '';
 
             return `
                 <tr class="${temErroCadastro ? 'tr-com-erro' : ''}">
                     <td class="col-num">${indexOriginal + 1}</td>
-                    <td><strong>${m.marca}</strong></td>
+                    <td><strong>${m.marca || '-'}</strong></td>
+                    <td><strong>${m.codigo || '-'}</strong></td>
                     <td>${m.modelo}${alertaErroHtml}</td>
-                    <td>${htmlMedidas.join('<br>') || '-'}</td>
+                    <td style="text-align: left; padding-left: 12px;">${htmlDetalhes.join('<br>') || '-'}</td>
                     <td>${m.vol || '-'}</td>
                     <td><strong>${Number(pesoTotalUnitario).toFixed(2).replace('.', ',')} kg</strong><br><small style="color:#38bdf8;">${cubagemTotalUnitario.toFixed(3).replace('.', ',')} m³</small></td>
                     <td class="col-acoes">
@@ -1808,66 +1796,68 @@
     function editarMaquina(index) {
         const item = bancoDados[index];
         if (!item) return;
-
         scrollPosAnterior = window.scrollY;
 
         document.getElementById('editIndex').value = index;
+        document.getElementById('editRowIndex').value = item.rowIndex;
+        document.getElementById('codigo').value = item.codigo || '';
         document.getElementById('marca').value = item.marca || '';
         document.getElementById('modelo').value = item.modelo || '';
         document.getElementById('peso').value = item.peso || 0;
         document.getElementById('medidas').value = item.medidas || '';
-
         document.getElementById('mesa').value = item.mesa || '';
         document.getElementById('pesoMesa').value = item.pesoMesa || '';
         document.getElementById('medidasMesa').value = item.medidasMesa || '';
-
         document.getElementById('motor').value = item.motor || '';
         document.getElementById('pesoMotor').value = item.pesoMotor || '';
         document.getElementById('medidasMotor').value = item.medidasMotor || '';
-
         document.getElementById('acessorio').value = item.acessorio || '';
         document.getElementById('pesoAcessorio').value = item.pesoAcessorio || '';
         document.getElementById('medidasAcessorio').value = item.medidasAcessorio || '';
-
         document.getElementById('vol').value = extrairNumeroVol(item.vol) || 1;
         document.getElementById('infoAdd').value = item.infoAdd || '';
 
         aoAlterarComponente();
-
         document.getElementById('btnSalvar').innerText = '💾 Salvar Alterações';
         document.getElementById('btnCancelarEdicao').style.display = 'inline-block';
         document.getElementById('boxSugestoesModelo').style.display = 'none';
+        document.getElementById('boxAvisoCodigo').style.display = 'none';
         document.getElementById('confirmacaoSimularCiente').value = 'true';
+        document.getElementById('confirmacaoCodigoCiente').value = 'true';
         document.getElementById('formMaquina').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     function cancelarEdicao() {
         document.getElementById('editIndex').value = '-1';
+        document.getElementById('editRowIndex').value = '';
         document.getElementById('formMaquina').reset();
-        
-        const inputsForm = document.querySelectorAll('#formMaquina input');
-        inputsForm.forEach(input => {
+        document.querySelectorAll('#formMaquina input').forEach(input => {
             input.style.borderColor = '#cbd5e1';
             input.style.borderWidth = '1px';
         });
-
         document.getElementById('boxErrosCadastro').style.display = 'none';
         document.getElementById('boxSugestoesModelo').style.display = 'none';
+        document.getElementById('boxAvisoCodigo').style.display = 'none';
         document.getElementById('confirmacaoSimularCiente').value = 'false';
+        document.getElementById('confirmacaoCodigoCiente').value = 'true';
         aoAlterarComponente();
         document.getElementById('btnSalvar').innerText = '➕ Cadastrar no Banco de Dados';
         document.getElementById('btnCancelarEdicao').style.display = 'none';
-
         window.scrollTo({ top: scrollPosAnterior, behavior: 'smooth' });
     }
 
     function excluirMaquina(index) {
         const item = bancoDados[index];
-        if (item && confirm(`Excluir permanentemente "${item.marca} - ${item.modelo}"?`)) {
-            const rowIndex = index + 1;
+        if (item && confirm(`Excluir permanentemente "${item.codigo ? '['+item.codigo+'] ' : ''}${item.marca} - ${item.modelo}"?`)) {
+            const rowIndex = item.rowIndex;
+            const scriptAntigo = document.getElementById('jsonpScriptDelete');
+            if (scriptAntigo) scriptAntigo.remove();
+            
             const script = document.createElement('script');
+            script.id = 'jsonpScriptDelete';
             script.src = `${URL_GOOGLE_SCRIPT}?action=delete&rowIndex=${rowIndex}&callback=callbackCarregarDados&t=${Date.now()}`;
             document.body.appendChild(script);
+            setTimeout(carregarDadosDrive, 1000);
         }
     }
 
@@ -1890,183 +1880,227 @@
         document.getElementById('calcGrupoAcessorio').style.display = 'none';
 
         if (tipo === 'maquina') {
-            document.querySelectorAll('.btn-tab-type')[0].classList.add('active');
             document.getElementById('calcGrupoMaquina').style.display = 'grid';
+            event.target.classList.add('active');
         } else if (tipo === 'mesa') {
-            document.querySelectorAll('.btn-tab-type')[1].classList.add('active');
             document.getElementById('calcGrupoMesa').style.display = 'grid';
+            event.target.classList.add('active');
         } else if (tipo === 'motor') {
-            document.querySelectorAll('.btn-tab-type')[2].classList.add('active');
             document.getElementById('calcGrupoMotor').style.display = 'grid';
+            event.target.classList.add('active');
         } else if (tipo === 'acessorio') {
-            document.querySelectorAll('.btn-tab-type')[3].classList.add('active');
             document.getElementById('calcGrupoAcessorio').style.display = 'grid';
+            event.target.classList.add('active');
         }
     }
 
-    function carregarSelectCalculadora(lista) {
+    function carregarSelectCalculadora(dados) {
         const select = document.getElementById('modeloSelect');
-        const contadorElem = document.getElementById('contadorItensBusca');
+        const contador = document.getElementById('contadorItensBusca');
+        if (!select) return;
         select.innerHTML = '';
-        lista.forEach((item) => {
+        if (contador) contador.innerText = dados.length;
+
+        dados.forEach((item, index) => {
             const opt = document.createElement('option');
-            opt.value = bancoDados.indexOf(item);
-            opt.innerText = `${item.marca} - ${item.modelo}`;
+            opt.value = index;
+            opt.text = `[${item.codigo || '-'}] ${item.marca} - ${item.modelo} (Vol: ${item.vol || 1})`;
             select.appendChild(opt);
         });
-        if (contadorElem) contadorElem.innerText = lista.length;
-        if (lista.length > 0) select.selectedIndex = 0;
     }
 
     function filtrarModelos() {
-        const buscaNorm = document.getElementById('search').value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        const termo = document.getElementById('search').value.toLowerCase().trim();
         const filtrados = bancoDados.filter(item => {
-            const mMarca = (item.marca || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-            const mModelo = (item.modelo || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-            return mMarca.includes(buscaNorm) || mModelo.includes(buscaNorm);
+            const txt = `${item.codigo || ''} ${item.marca || ''} ${item.modelo || ''}`.toLowerCase();
+            return txt.includes(termo);
         });
-        carregarSelectCalculadora(filtrados);
+        const select = document.getElementById('modeloSelect');
+        const contador = document.getElementById('contadorItensBusca');
+        select.innerHTML = '';
+        if (contador) contador.innerText = filtrados.length;
+
+        filtrados.forEach(item => {
+            const indexOriginal = bancoDados.indexOf(item);
+            const opt = document.createElement('option');
+            opt.value = indexOriginal;
+            opt.text = `[${item.codigo || '-'}] ${item.marca} - ${item.modelo} (Vol: ${item.vol || 1})`;
+            select.appendChild(opt);
+        });
     }
 
     function adicionarItemCarga(tipo) {
+        let qtd = 1;
+        let itemAdicionado = null;
+
         if (tipo === 'maquina') {
             const select = document.getElementById('modeloSelect');
-            const quantidade = parseInt(document.getElementById('qtd').value) || 1;
-            if (select.selectedIndex === -1 || bancoDados.length === 0) return;
-            const modeloEncontrado = bancoDados[parseInt(select.value)];
-            if (!modeloEncontrado) return;
-
-            const pesoCalculadoUnitario = calcularPesoUnitarioTotal(modeloEncontrado);
-            const cubagemCalculadaUnitaria = calcularCubagemUnitariaTotal(modeloEncontrado);
-            const volNumUnitario = extrairNumeroVol(modeloEncontrado.vol);
-
-            listaCarga.push({
-                marca: modeloEncontrado.marca,
-                modelo: modeloEncontrado.modelo,
-                qtd: quantidade,
-                volUnitarioNum: volNumUnitario,
-                volTotalCalculado: volNumUnitario * quantidade,
-                pesoUnitarioTotal: pesoCalculadoUnitario,
-                pesoTotal: pesoCalculadoUnitario * quantidade,
-                cubagemUnitariaTotal: cubagemCalculadaUnitaria,
-                cubagemTotal: cubagemCalculadaUnitaria * quantidade
-            });
+            const idx = select.value;
+            if (idx === '' || !bancoDados[idx]) {
+                alert('Selecione uma máquina válida na lista de pesquisa.');
+                return;
+            }
+            qtd = parseInt(document.getElementById('qtd').value, 10) || 1;
+            const original = bancoDados[idx];
+            itemAdicionado = {
+                tipo: 'maquina',
+                quantidade: qtd,
+                marca: original.marca,
+                modelo: `[${original.codigo || '-'}] ${original.modelo}`,
+                volUnit: parseInt(original.vol, 10) || 1,
+                pesoUnit: calcularPesoUnitarioTotal(original),
+                cubagemUnit: calcularCubagemUnitariaTotal(original)
+            };
         } else if (tipo === 'mesa') {
             const selectMesa = document.getElementById('selectMesaAvulsa');
-            const quantidade = parseInt(document.getElementById('qtdMesaAvulsa').value) || 1;
-            if (selectMesa.selectedIndex === -1 || bancoMesas.length === 0) return;
-            const mesaObj = bancoMesas[parseInt(selectMesa.value)];
-            const cubagem = calcularCubagemEmM3(mesaObj.medidas);
-
-            listaCarga.push({
-                marca: mesaObj.marca || 'Avulso',
-                modelo: `Mesa: ${mesaObj.nome}`,
-                qtd: quantidade,
-                volUnitarioNum: 1,
-                volTotalCalculado: 1 * quantidade,
-                pesoUnitarioTotal: mesaObj.peso,
-                pesoTotal: mesaObj.peso * quantidade,
-                cubagemUnitariaTotal: cubagem,
-                cubagemTotal: cubagem * quantidade
-            });
+            const idxMesa = selectMesa.value;
+            if (idxMesa === '' || !bancoMesas[idxMesa]) {
+                alert('Selecione uma mesa válida.');
+                return;
+            }
+            qtd = parseInt(document.getElementById('qtdMesaAvulsa').value, 10) || 1;
+            const m = bancoMesas[idxMesa];
+            itemAdicionado = {
+                tipo: 'mesa',
+                quantidade: qtd,
+                marca: m.marca || 'AVULSO',
+                modelo: `MESA: ${m.nome}`,
+                volUnit: 1,
+                pesoUnit: parseNum(m.peso),
+                cubagemUnit: calcularCubagemEmM3(m.medidas)
+            };
         } else if (tipo === 'motor') {
             const selectMotor = document.getElementById('selectMotorAvulso');
-            const quantidade = parseInt(document.getElementById('qtdMotorAvulso').value) || 1;
-            if (selectMotor.selectedIndex === -1 || bancoMotores.length === 0) return;
-            const motorObj = bancoMotores[parseInt(selectMotor.value)];
-            const cubagem = calcularCubagemEmM3(motorObj.medidas);
-
-            listaCarga.push({
-                marca: motorObj.marca || 'Avulso',
-                modelo: `Motor: ${motorObj.nome}`,
-                qtd: quantidade,
-                volUnitarioNum: 1,
-                volTotalCalculado: 1 * quantidade,
-                pesoUnitarioTotal: motorObj.peso,
-                pesoTotal: motorObj.peso * quantidade,
-                cubagemUnitariaTotal: cubagem,
-                cubagemTotal: cubagem * quantidade
-            });
+            const idxMotor = selectMotor.value;
+            if (idxMotor === '' || !bancoMotores[idxMotor]) {
+                alert('Selecione um motor válido.');
+                return;
+            }
+            qtd = parseInt(document.getElementById('qtdMotorAvulso').value, 10) || 1;
+            const mot = bancoMotores[idxMotor];
+            itemAdicionado = {
+                tipo: 'motor',
+                quantidade: qtd,
+                marca: mot.marca || 'AVULSO',
+                modelo: `MOTOR: ${mot.nome}`,
+                volUnit: 1,
+                pesoUnit: parseNum(mot.peso),
+                cubagemUnit: calcularCubagemEmM3(mot.medidas)
+            };
         } else if (tipo === 'acessorio') {
             const selectAcessorio = document.getElementById('selectAcessorioAvulso');
-            const quantidade = parseInt(document.getElementById('qtdAcessorioAvulso').value) || 1;
-            if (selectAcessorio.selectedIndex === -1 || bancoAcessorios.length === 0) return;
-            const acessorioObj = bancoAcessorios[parseInt(selectAcessorio.value)];
-            const cubagem = calcularCubagemEmM3(acessorioObj.medidas);
-
-            listaCarga.push({
-                marca: acessorioObj.marca || 'Avulso',
-                modelo: `Acessório: ${acessorioObj.nome}`,
-                qtd: quantidade,
-                volUnitarioNum: 1,
-                volTotalCalculado: 1 * quantidade,
-                pesoUnitarioTotal: acessorioObj.peso,
-                pesoTotal: acessorioObj.peso * quantidade,
-                cubagemUnitariaTotal: cubagem,
-                cubagemTotal: cubagem * quantidade
-            });
+            const idxAcessorio = selectAcessorio.value;
+            if (idxAcessorio === '' || !bancoAcessorios[idxAcessorio]) {
+                alert('Selecione um acessório válido.');
+                return;
+            }
+            qtd = parseInt(document.getElementById('qtdAcessorioAvulso').value, 10) || 1;
+            const ac = bancoAcessorios[idxAcessorio];
+            itemAdicionado = {
+                tipo: 'acessorio',
+                quantidade: qtd,
+                marca: ac.marca || 'AVULSO',
+                modelo: `ACESSÓRIO: ${ac.nome}`,
+                volUnit: 1,
+                pesoUnit: parseNum(ac.peso),
+                cubagemUnit: calcularCubagemEmM3(ac.medidas)
+            };
         }
+
+        if (itemAdicionado) {
+            listaCarga.push(itemAdicionado);
+            atualizarTabelaCarga();
+        }
+    }
+
+    function removerItemCarga(index) {
+        listaCarga.splice(index, 1);
         atualizarTabelaCarga();
     }
 
-    function removerItemCarga(index) { listaCarga.splice(index, 1); atualizarTabelaCarga(); }
-    function limparListaCarga() { listaCarga = []; atualizarTabelaCarga(); }
-
-    function prepararEImprimir() {
-        const spanData = document.getElementById('printDataHora');
-        if (spanData) {
-            const agora = new Date();
-            spanData.innerText = "Emitido em: " + agora.toLocaleDateString() + " às " + agora.toLocaleTimeString();
+    function limparListaCarga() {
+        if (confirm('Deseja limpar todos os itens da lista de carga?')) {
+            listaCarga = [];
+            atualizarTabelaCarga();
         }
-        window.print();
     }
 
     function atualizarTabelaCarga() {
         const corpo = document.getElementById('corpoTabelaCarga');
         const caixaTotal = document.getElementById('caixaTotal');
+        if (!corpo) return;
 
         if (listaCarga.length === 0) {
             corpo.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #cbd5e1;">Nenhum item adicionado à lista.</td></tr>`;
-            caixaTotal.innerHTML = 'Total de Itens: 0 un | Total VOL: 0 | Cubagem Total: 0,000 m³ | Peso Total: 0,00 kg';
+            caixaTotal.innerText = `Total de Itens: 0 un | Total VOL: 0 | Cubagem Total: 0,000 m³ | Peso Total: 0,00 kg`;
             return;
         }
 
-        let totalQtd = 0, totalPeso = 0, totalVol = 0, totalCubagem = 0;
-        corpo.innerHTML = listaCarga.map((item, index) => {
-            totalQtd += item.qtd; totalPeso += item.pesoTotal; totalVol += item.volTotalCalculado; totalCubagem += item.cubagemTotal;
+        let totalPecas = 0, totalVol = 0, totalCubagem = 0, totalPeso = 0;
+
+        corpo.innerHTML = listaCarga.map((item, idx) => {
+            const volTotalItem = item.quantidade * item.volUnit;
+            const cubagemTotalItem = item.quantidade * item.cubagemUnit;
+            const pesoTotalItem = item.quantidade * item.pesoUnit;
+
+            totalPecas += item.quantidade;
+            totalVol += volTotalItem;
+            totalCubagem += cubagemTotalItem;
+            totalPeso += pesoTotalItem;
+
             return `
                 <tr>
-                    <td class="col-num">${index + 1}</td>
-                    <td><strong>${item.qtd}</strong></td>
-                    <td><strong>${item.marca}</strong></td>
-                    <td><strong>${item.modelo}</strong></td>
-                    <td>${item.volUnitarioNum || '-'}</td>
-                    <td>${Number(item.pesoUnitarioTotal).toFixed(2).replace('.', ',')} kg<br><small style="color:#38bdf8;">${item.cubagemUnitariaTotal.toFixed(3).replace('.', ',')} m³</small></td>
-                    <td><strong>${Number(item.pesoTotal).toFixed(2).replace('.', ',')} kg</strong><br><span style="color:#38bdf8; font-size:12px;"><strong>${item.cubagemTotal.toFixed(3).replace('.', ',')} m³</strong></span><br><small>VOL: ${item.volTotalCalculado}</small></td>
-                    <td class="col-acoes"><button class="btn-danger-sm" onclick="removerItemCarga(${index})">Remover</button></td>
+                    <td class="col-num">${idx + 1}</td>
+                    <td><strong>${item.quantidade}</strong></td>
+                    <td>${item.marca}</td>
+                    <td style="text-align: left; padding-left: 10px;">${item.modelo}</td>
+                    <td>${item.volUnit}</td>
+                    <td>${item.pesoUnit.toFixed(2).replace('.', ',')} kg<br><small style="color:#38bdf8;">${item.cubagemUnit.toFixed(3).replace('.', ',')} m³</small></td>
+                    <td><strong>${pesoTotalItem.toFixed(2).replace('.', ',')} kg</strong><br><small style="color:#38bdf8;">${cubagemTotalItem.toFixed(3).replace('.', ',')} m³</small><br><span style="color:#facc15;">VOL: ${volTotalItem}</span></td>
+                    <td class="col-acoes">
+                        <button class="btn-danger-sm" onclick="removerItemCarga(${idx})">Remover</button>
+                    </td>
                 </tr>
             `;
         }).join('');
 
-        caixaTotal.innerHTML = `Total de Itens: <strong>${totalQtd} un</strong> | Total VOL: <strong>${totalVol}</strong> | Cubagem Total: <strong>${totalCubagem.toFixed(3).replace('.', ',')} m³</strong> | Peso Total: <strong>${totalPeso.toFixed(2).replace('.', ',')} kg</strong>`;
+        caixaTotal.innerText = `Total de Itens: ${totalPecas} un | Total VOL: ${totalVol} | Cubagem Total: ${totalCubagem.toFixed(3).replace('.', ',')} m³ | Peso Total: ${totalPeso.toFixed(2).replace('.', ',')} kg`;
+    }
+
+    function prepararEImprimir() {
+        if (listaCarga.length === 0) {
+            alert('Adicione itens à lista antes de imprimir.');
+            return;
+        }
+        const dataAtual = new Date().toLocaleString('pt-BR');
+        const spanData = document.getElementById('printDataHora');
+        if (spanData) spanData.innerText = `Emitido em: ${dataAtual}`;
+        window.print();
     }
 
     function exportarExcelBackup() {
+        if (bancoDados.length === 0 && bancoMesas.length === 0) {
+            alert('Não há dados cadastrados para exportar.');
+            return;
+        }
         const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(bancoDados.length > 0 ? bancoDados : [{ Info: "Sem dados" }]), "Maquinas");
-        XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(bancoMesas.length > 0 ? bancoMesas : [{ Info: "Sem dados" }]), "Mesas");
-        XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(bancoMotores.length > 0 ? bancoMotores : [{ Info: "Sem dados" }]), "Motores");
-        XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(bancoAcessorios.length > 0 ? bancoAcessorios : [{ Info: "Sem dados" }]), "Acessorios");
-        XLSX.writeFile(wb, "Backup_Completo_Sistema_Carga.xlsx");
+        const wsMaquinas = XLSX.utils.json_to_sheet(bancoDados);
+        const wsMesas = XLSX.utils.json_to_sheet(bancoMesas);
+        const wsMotores = XLSX.utils.json_to_sheet(bancoMotores);
+        const wsAcessorios = XLSX.utils.json_to_sheet(bancoAcessorios);
+
+        XLSX.utils.book_append_sheet(wb, wsMaquinas, "Máquinas");
+        XLSX.utils.book_append_sheet(wb, wsMesas, "Mesas");
+        XLSX.utils.book_append_sheet(wb, wsMotores, "Motores");
+        XLSX.utils.book_append_sheet(wb, wsAcessorios, "Acessórios");
+
+        XLSX.writeFile(wb, `Backup_Sistema_Carga_${new Date().toISOString().slice(0, 10)}.xlsx`);
     }
 
-    renderizarDatalistsEFormularios();
-    
-    atualizarProgressoSplash(20, 'Preparando ambiente du sistema...');
-    setTimeout(() => {
+    window.onload = function() {
         carregarDadosDrive();
-    }, 400);
+    };
 </script>
-
 </body>
 </html>
+```[cite: 14]
