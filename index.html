@@ -50,7 +50,7 @@
         }
 
         .splash-logo img {
-            max-width: 200px;
+            max-width: 280px;
             height: auto;
             border-radius: 8px;
             filter: drop-shadow(0 0 12px rgba(230, 0, 0, 0.5));
@@ -481,10 +481,16 @@
         .print-header { display: none; }
 
         @media print {
+            /* Regra para ocultar cabeçalho e rodapé padrão do navegador (diretório, data, URL e nome do arquivo) */
+            @page {
+                size: auto;
+                margin: 10mm 10mm 10mm 10mm;
+            }
+
             body { background: #ffffff !important; color: #000000 !important; padding: 0 !important; }
             #splashScreen, .btn-nav, .tab-calc-buttons, .form-grid-calc, p.subtitle, .btn-clear-sec, .col-acoes, th.col-acoes, td.col-acoes, .header-bar { display: none !important; }
             .print-header { display: flex !important; justify-content: space-between; align-items: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px; }
-            .print-header img { max-height: 50px; width: auto; }
+            .print-header img { max-height: 90px; width: auto; }
             .print-header h1 { font-size: 22px; color: #000; margin: 0; text-align: right; }
             .print-header span { font-size: 12px; color: #555; }
             .container { margin: 0 !important; padding: 10px !important; max-width: 100% !important; }
@@ -493,7 +499,17 @@
             th { background-color: #f1f5f9 !important; color: #000 !important; border: 1px solid #000 !important; }
             td { border: 1px solid #000 !important; color: #000 !important; }
             tr:nth-child(even) { background-color: #f8fafc !important; }
-            .total-box { background: #f1f5f9 !important; border: 1px solid #000 !important; color: #000 !important; text-align: right !important; margin-top: 15px !important; }
+            
+            /* Caixa de totais com escritas em branco na impressão */
+            .total-box { 
+                background: #000000 !important; 
+                border: 1px solid #000 !important; 
+                color: #ffffff !important; 
+                text-align: right !important; 
+                margin-top: 15px !important; 
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
         }
     </style>
 </head>
@@ -655,7 +671,7 @@
                         <input type="text" id="marca" placeholder="Ex.: Siruba, Elgin..." required oninput="validarCampoEmTempoReal(this); verificarModelosParecidos();">
                     </div>
                     <div class="form-group">
-                        <label for="vol">Vol (Calculado Automaticamente)</label>
+                        <label for="vol">Vol</label>
                         <input type="number" id="vol" value="1" min="1" step="1" required readonly title="Calculado automaticamente com base nos componentes preenchidos">
                     </div>
                 </div>
@@ -679,7 +695,6 @@
                     <div class="form-group">
                         <label for="medidas">Dimensões - C x L x A (cm)</label>
                         <input type="text" id="medidas" placeholder="Ex.: 69X38X77" oninput="ajustarFormatoMedida(this); validarCampoEmTempoReal(this)" required>
-                        <small style="color: #94a3b8; font-size: 11px; margin-top: 2px;">Apenas números e X (ex: 69X38X77)</small>
                     </div>
                 </div>
 
@@ -2099,8 +2114,7 @@
 
     window.onload = function() {
         carregarDadosDrive();
-    };
+    }
 </script>
 </body>
 </html>
-```[cite: 14]
