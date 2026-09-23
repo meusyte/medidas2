@@ -2111,20 +2111,68 @@
     }
 
     function exportarExcelBackup() {
-        if (bancoDados.length === 0 && bancoMesas.length === 0) {
+        if (bancoDados.length === 0 && bancoMesas.length === 0 && bancoMotores.length === 0 && bancoAcessorios.length === 0) {
             alert('NÃO HÁ DADOS CADASTRADOS PARA EXPORTAR.');
             return;
         }
+        
         const wb = XLSX.utils.book_new();
-        const wsMaquinas = XLSX.utils.json_to_sheet(bancoDados);
-        const wsMesas = XLSX.utils.json_to_sheet(bancoMesas);
-        const wsMotores = XLSX.utils.json_to_sheet(bancoMotores);
-        const wsAcessorios = XLSX.utils.json_to_sheet(bancoAcessorios);
+        
+        // Função auxiliar para formatar os dados em letra maiúscula e adicionar bordas nas células
+        function criarPlanilhaFormatada(dados) {
+            // Converte todos os campos de texto/string para LETRAS MAIÚSCULAS
+            const dadosUppercase = dados.map(item => {
+                const novoItem = {};
+                for (let chave in item) {
+                    let valor = item[chave];
+                    if (typeof valor === 'string') {
+                        valor = valor.toUpperCase();
+                    }
+                    novoItem[chave.toUpperCase()] = valor;
+                }
+                return novoItem;
+            });
 
-        XLSX.utils.book_append_sheet(wb, wsMaquinas, "MÁQUINAS");
-        XLSX.utils.book_append_sheet(wb, wsMesas, "MESAS");
-        XLSX.utils.book_append_sheet(wb, wsMotores, "MOTORES");
-        XLSX.utils.book_append_sheet(wb, wsAcessorios, "ACESSÓRIOS");
+            const ws = XLSX.utils.json_to_sheet(dadosUppercase);
+            
+            // Adiciona bordas em todas as células preenchidas da planilha
+            const range = XLSX.utils.decode_range(ws['!ref'] || "A1");
+            const bordaFina = {
+                top: { style: "thin", color: { rgb: "000000" } },
+                bottom: { style: "thin", color: { rgb: "000000" } },
+                left: { style: "thin", color: { rgb: "000000" } },
+                right: { style: "thin", color: { rgb: "000000" } }
+            };
+
+            for (let R = range.s.r; R <= range.e.r; ++R) {
+                for (let C = range.s.c; C <= range.e.c; ++C) {
+                    const cellAddress = XLSX.utils.encode_cell({r: R, c: C});
+                    if (!ws[cellAddress]) ws[cellAddress] = { t: 's', v: '' };
+                    if (!ws[cellAddress].s) ws[cellAddress].s = {};
+                    ws[cellAddress].s.border = bordaFina;
+                    
+                    // Destaca o cabeçalho em negrito
+                    if (R === 0) {
+                        ws[cellAddress].s.font = { bold: true };
+                        ws[cellAddress].s.fill = { fgColor: { rgb: "E0E0E0" } };
+                    }
+                }
+            }
+            return ws;
+        }
+
+        if (bancoDados.length > 0) {
+            XLSX.utils.book_append_sheet(wb, criarPlanilhaFormatada(bancoDados), "MÁQUINAS");
+        }
+        if (bancoMesas.length > 0) {
+            XLSX.utils.book_append_sheet(wb, criarPlanilhaFormatada(bancoMesas), "MESAS");
+        }
+        if (bancoMotores.length > 0) {
+            XLSX.utils.book_append_sheet(wb, criarPlanilhaFormatada(bancoMotores), "MOTORES");
+        }
+        if (bancoAcessorios.length > 0) {
+            XLSX.utils.book_append_sheet(wb, criarPlanilhaFormatada(bancoAcessorios), "ACESSÓRIOS");
+        }
 
         XLSX.writeFile(wb, `BACKUP_SISTEMA_CARGA_${new Date().toISOString().slice(0, 10)}.xlsx`);
     }
