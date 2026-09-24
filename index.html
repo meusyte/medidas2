@@ -494,9 +494,9 @@
             .print-header span { font-size: 12px; color: #555; }
             .container { margin: 0 !important; padding: 10px !important; max-width: 100% !important; }
             .table-responsive-container { border: 1px solid #000 !important; background: #fff !important; }
-            table { color: #000 !important; }
+            table { color: #000 !important; font-size: 11px !important; }
             th { background-color: #f1f5f9 !important; color: #000 !important; border: 1px solid #000 !important; }
-            td { border: 1px solid #000 !important; color: #000 !important; }
+            td { border: 1px solid #000 !important; color: #000 !important; padding: 6px 4px !important; }
             tr:nth-child(even) { background-color: #f8fafc !important; }
             
             .total-box { 
@@ -626,12 +626,12 @@
                 <thead>
                     <tr>
                         <th class="col-num">#</th>
-                        <th style="width: 50px;">Qtd.</th>
-                        <th style="width: 110px;">Marca / Origem</th>
-                        <th style="width: 220px;">Modelo / Especificação</th>
-                        <th style="width: 75px;">VOL Unit.</th>
-                        <th style="width: 130px;">Unitário (Peso / m³)</th>
-                        <th style="width: 180px;">TOTAIS (Peso / m³ / VOL)</th>
+                        <th style="width: 45px;">Qtd.</th>
+                        <th style="width: 90px;">Marca / Origem</th>
+                        <th style="width: 150px;">Modelo / Especificação</th>
+                        <th style="width: 250px;">Medida Individual (C x L x A) & Peso Individual</th>
+                        <th style="width: 60px;">VOL.</th>
+                        <th style="width: 155px;">Totais (Peso / m³ / VOL)</th>
                         <th class="col-acoes">Ações</th>
                     </tr>
                 </thead>
@@ -1974,14 +1974,43 @@
             }
             qtd = parseInt(document.getElementById('qtd').value, 10) || 1;
             const original = bancoDados[idx];
+            
+            let medidasIndividuaisArr = [];
+            if (original.medidas) {
+                const pPrinc = parseNum(original.peso);
+                const m3Princ = calcularCubagemEmM3(original.medidas);
+                medidasIndividuaisArr.push(`<b>PRINC.:</b> ${pPrinc > 0 ? pPrinc.toFixed(2).replace('.', ',') + ' KG, ' : ''}${original.medidas.toUpperCase()} CM <small style="color:#38bdf8;">(${m3Princ.toFixed(3).replace('.', ',')} M³)</small>`);
+            }
+            if (original.medidasMesa) {
+                const pMesa = parseNum(original.pesoMesa);
+                const m3Mesa = calcularCubagemEmM3(original.medidasMesa);
+                medidasIndividuaisArr.push(`<b>MESA (${(original.mesa || 'PADRÃO').toUpperCase()}):</b> ${pMesa > 0 ? pMesa.toFixed(2).replace('.', ',') + ' KG, ' : ''}${original.medidasMesa.toUpperCase()} CM <small style="color:#38bdf8;">(${m3Mesa.toFixed(3).replace('.', ',')} M³)</small>`);
+            }
+            if (original.medidasMotor) {
+                const pMotor = parseNum(original.pesoMotor);
+                const m3Motor = calcularCubagemEmM3(original.medidasMotor);
+                medidasIndividuaisArr.push(`<b>MOTOR (${(original.motor || 'PADRÃO').toUpperCase()}):</b> ${pMotor > 0 ? pMotor.toFixed(2).replace('.', ',') + ' KG, ' : ''}${original.medidasMotor.toUpperCase()} CM <small style="color:#38bdf8;">(${m3Motor.toFixed(3).replace('.', ',')} M³)</small>`);
+            }
+            if (original.medidasAcessorio) {
+                const pAcess = parseNum(original.pesoAcessorio);
+                const m3Acess = calcularCubagemEmM3(original.medidasAcessorio);
+                medidasIndividuaisArr.push(`<b>ACESS. (${(original.acessorio || 'PADRÃO').toUpperCase()}):</b> ${pAcess > 0 ? pAcess.toFixed(2).replace('.', ',') + ' KG, ' : ''}${original.medidasAcessorio.toUpperCase()} CM <small style="color:#38bdf8;">(${m3Acess.toFixed(3).replace('.', ',')} M³)</small>`);
+            }
+
+            const pesoUnitTotal = calcularPesoUnitarioTotal(original);
+            const cubagemUnitTotal = calcularCubagemUnitariaTotal(original);
+            const volUnitTotal = parseInt(original.vol, 10) || 1;
+            medidasIndividuaisArr.push(`<div style="margin-top:4px; padding-top:4px; border-top:1px dashed rgba(255,255,255,0.2); color:#38bdf8; font-weight:bold;">TOTAL: ${pesoUnitTotal.toFixed(2).replace('.', ',')} KG | ${cubagemUnitTotal.toFixed(3).replace('.', ',')} M³ | VOL: ${volUnitTotal}</div>`);
+
             itemAdicionado = {
                 tipo: 'maquina',
                 quantidade: qtd,
                 marca: (original.marca || '').toUpperCase(),
                 modelo: `[${(original.codigo || '-').toUpperCase()}] ${(original.modelo || '').toUpperCase()}`,
-                volUnit: parseInt(original.vol, 10) || 1,
-                pesoUnit: calcularPesoUnitarioTotal(original),
-                cubagemUnit: calcularCubagemUnitariaTotal(original)
+                medidasIndividuaisHtml: medidasIndividuaisArr.join('<br>'),
+                volUnit: volUnitTotal,
+                pesoUnit: pesoUnitTotal,
+                cubagemUnit: cubagemUnitTotal
             };
         } else if (tipo === 'mesa') {
             const selectMesa = document.getElementById('selectMesaAvulsa');
@@ -1992,14 +2021,17 @@
             }
             qtd = parseInt(document.getElementById('qtdMesaAvulsa').value, 10) || 1;
             const m = bancoMesas[idxMesa];
+            const pM = parseNum(m.peso);
+            const m3M = calcularCubagemEmM3(m.medidas);
             itemAdicionado = {
                 tipo: 'mesa',
                 quantidade: qtd,
                 marca: (m.marca || 'AVULSO').toUpperCase(),
                 modelo: `MESA: ${(m.nome || '').toUpperCase()}`,
+                medidasIndividuaisHtml: `<b>MESA:</b> ${pM > 0 ? pM.toFixed(2).replace('.', ',') + ' KG, ' : ''}${(m.medidas || '').toUpperCase()} CM <small style="color:#38bdf8;">(${m3M.toFixed(3).replace('.', ',')} M³)</small>`,
                 volUnit: 1,
-                pesoUnit: parseNum(m.peso),
-                cubagemUnit: calcularCubagemEmM3(m.medidas)
+                pesoUnit: pM,
+                cubagemUnit: m3M
             };
         } else if (tipo === 'motor') {
             const selectMotor = document.getElementById('selectMotorAvulso');
@@ -2010,14 +2042,17 @@
             }
             qtd = parseInt(document.getElementById('qtdMotorAvulso').value, 10) || 1;
             const mot = bancoMotores[idxMotor];
+            const pMot = parseNum(mot.peso);
+            const m3Mot = calcularCubagemEmM3(mot.medidas);
             itemAdicionado = {
                 tipo: 'motor',
                 quantidade: qtd,
                 marca: (mot.marca || 'AVULSO').toUpperCase(),
                 modelo: `MOTOR: ${(mot.nome || '').toUpperCase()}`,
+                medidasIndividuaisHtml: `<b>MOTOR:</b> ${pMot > 0 ? pMot.toFixed(2).replace('.', ',') + ' KG, ' : ''}${(mot.medidas || '').toUpperCase()} CM <small style="color:#38bdf8;">(${m3Mot.toFixed(3).replace('.', ',')} M³)</small>`,
                 volUnit: 1,
-                pesoUnit: parseNum(mot.peso),
-                cubagemUnit: calcularCubagemEmM3(mot.medidas)
+                pesoUnit: pMot,
+                cubagemUnit: m3Mot
             };
         } else if (tipo === 'acessorio') {
             const selectAcessorio = document.getElementById('selectAcessorioAvulso');
@@ -2028,14 +2063,17 @@
             }
             qtd = parseInt(document.getElementById('qtdAcessorioAvulso').value, 10) || 1;
             const ac = bancoAcessorios[idxAcessorio];
+            const pAc = parseNum(ac.peso);
+            const m3Ac = calcularCubagemEmM3(ac.medidas);
             itemAdicionado = {
                 tipo: 'acessorio',
                 quantidade: qtd,
                 marca: (ac.marca || 'AVULSO').toUpperCase(),
                 modelo: `ACESSÓRIO: ${(ac.nome || '').toUpperCase()}`,
+                medidasIndividuaisHtml: `<b>ACESS.:</b> ${pAc > 0 ? pAc.toFixed(2).replace('.', ',') + ' KG, ' : ''}${(ac.medidas || '').toUpperCase()} CM <small style="color:#38bdf8;">(${m3Ac.toFixed(3).replace('.', ',')} M³)</small>`,
                 volUnit: 1,
-                pesoUnit: parseNum(ac.peso),
-                cubagemUnit: calcularCubagemEmM3(ac.medidas)
+                pesoUnit: pAc,
+                cubagemUnit: m3Ac
             };
         }
 
@@ -2045,9 +2083,66 @@
         }
     }
 
-    function removerItemCarga(index) {
-        listaCarga.splice(index, 1);
+    function removerItemCarga(index, quantidadeParaRemover = null) {
+        if (quantidadeParaRemover !== null) {
+            if (listaCarga[index].quantidade > quantidadeParaRemover) {
+                listaCarga[index].quantidade -= quantidadeParaRemover;
+            } else {
+                listaCarga.splice(index, 1);
+            }
+        } else {
+            listaCarga.splice(index, 1);
+        }
         atualizarTabelaCarga();
+    }
+
+    function atualizarTabelaCarga() {
+        const corpo = document.getElementById('corpoTabelaCarga');
+        const caixaTotal = document.getElementById('caixaTotal');
+        if (!corpo) return;
+
+        if (listaCarga.length === 0) {
+            corpo.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #cbd5e1;">Nenhum item adicionado à lista.</td></tr>`;
+            if (caixaTotal) caixaTotal.innerText = `Total de Itens: 0 un | Total VOL: 0 | Cubagem Total: 0,000 m³ | Peso Total: 0,00 kg`;
+            return;
+        }
+
+        let totalItens = 0;
+        let totalVol = 0;
+        let totalCubagem = 0;
+        let totalPeso = 0;
+
+        corpo.innerHTML = listaCarga.map((item, index) => {
+            const qtd = item.quantidade;
+            const volLinha = qtd * item.volUnit;
+            const pesoLinha = qtd * item.pesoUnit;
+            const cubagemLinha = qtd * item.cubagemUnit;
+
+            totalItens += qtd;
+            totalVol += volLinha;
+            totalCubagem += cubagemLinha;
+            totalPeso += pesoLinha;
+
+            return `
+                <tr>
+                    <td class="col-num">${index + 1}</td>
+                    <td><strong>${qtd}</strong></td>
+                    <td>${item.marca}</td>
+                    <td>${item.modelo}</td>
+                    <td style="text-align: left; padding-left: 10px;">${item.medidasIndividuaisHtml}</td>
+                    <td><strong>${volLinha}</strong></td>
+                    <td><strong>${pesoLinha.toFixed(2).replace('.', ',')} KG</strong><br><small style="color:#38bdf8;">${cubagemLinha.toFixed(3).replace('.', ',')} M³</small></td>
+                    <td class="col-acoes">
+                        <button class="btn-danger-sm" style="background-color: #f59e0b; margin-bottom: 4px;" onclick="removerItemCarga(${index}, 1)">-1 UN</button>
+                        <button class="btn-danger-sm" onclick="removerItemCarga(${index})">EXCLUIR</button>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+
+        if (caixaTotal) {
+            caixaTotal.innerText = `Total de Itens: ${totalItens} un | Total VOL: ${totalVol} | Cubagem Total: ${totalCubagem.toFixed(3).replace('.', ',')} m³ | Peso Total: ${totalPeso.toFixed(2).replace('.', ',')} kg`;
+        }
     }
 
     function limparListaCarga() {
@@ -2057,129 +2152,28 @@
         }
     }
 
-    function atualizarTabelaCarga() {
-        const corpo = document.getElementById('corpoTabelaCarga');
-        const caixaTotal = document.getElementById('caixaTotal');
-        if (!corpo) return;
-
-        if (listaCarga.length === 0) {
-            corpo.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #cbd5e1;">NENHUM ITEM ADICIONADO À LISTA.</td></tr>`;
-            caixaTotal.innerText = `TOTAL DE ITENS: 0 UN | TOTAL VOL: 0 | CUBAGEM TOTAL: 0,000 M³ | PESO TOTAL: 0,00 KG`;
-            return;
-        }
-
-        let totalPecas = 0, totalVol = 0, totalCubagem = 0, totalPeso = 0;
-
-        corpo.innerHTML = listaCarga.map((item, idx) => {
-            const volTotalItem = item.quantidade * item.volUnit;
-            const cubagemTotalItem = item.quantidade * item.cubagemUnit;
-            const pesoTotalItem = item.quantidade * item.pesoUnit;
-
-            totalPecas += item.quantidade;
-            totalVol += volTotalItem;
-            totalCubagem += cubagemTotalItem;
-            totalPeso += pesoTotalItem;
-
-            return `
-                <tr>
-                    <td class="col-num">${idx + 1}</td>
-                    <td><strong>${item.quantidade}</strong></td>
-                    <td>${(item.marca || '').toUpperCase()}</td>
-                    <td style="text-align: left; padding-left: 10px;">${(item.modelo || '').toUpperCase()}</td>
-                    <td>${item.volUnit}</td>
-                    <td>${item.pesoUnit.toFixed(2).replace('.', ',')} KG<br><small style="color:#38bdf8;">${item.cubagemUnit.toFixed(3).replace('.', ',')} M³</small></td>
-                    <td><strong>${pesoTotalItem.toFixed(2).replace('.', ',')} KG</strong><br><small style="color:#38bdf8;">${cubagemTotalItem.toFixed(3).replace('.', ',')} M³</small><br><span style="color:#facc15;">VOL: ${volTotalItem}</span></td>
-                    <td class="col-acoes">
-                        <button class="btn-danger-sm" onclick="removerItemCarga(${idx})">REMOVER</button>
-                    </td>
-                </tr>
-            `;
-        }).join('');
-
-        caixaTotal.innerText = `TOTAL DE ITENS: ${totalPecas} UN | TOTAL VOL: ${totalVol} | CUBAGEM TOTAL: ${totalCubagem.toFixed(3).replace('.', ',')} M³ | PESO TOTAL: ${totalPeso.toFixed(2).replace('.', ',')} KG`;
-    }
-
     function prepararEImprimir() {
-        if (listaCarga.length === 0) {
-            alert('ADICIONE ITENS À LISTA ANTES DE IMPRIMIR.');
-            return;
-        }
-        const dataAtual = new Date().toLocaleString('pt-BR');
-        const spanData = document.getElementById('printDataHora');
-        if (spanData) spanData.innerText = `EMITIDO EM: ${dataAtual}`.toUpperCase();
+        const d = new Date();
+        const dataStr = d.toLocaleDateString('pt-BR') + ' ' + d.toLocaleTimeString('pt-BR');
+        const printDataElem = document.getElementById('printDataHora');
+        if (printDataElem) printDataElem.innerText = `EMITIDO EM: ${dataStr}`;
         window.print();
     }
 
     function exportarExcelBackup() {
-        if (bancoDados.length === 0 && bancoMesas.length === 0 && bancoMotores.length === 0 && bancoAcessorios.length === 0) {
-            alert('NÃO HÁ DADOS CADASTRADOS PARA EXPORTAR.');
+        if (bancoDados.length === 0) {
+            alert("Nenhum dado disponível para exportar.");
             return;
         }
-        
+        const ws = XLSX.utils.json_to_sheet(bancoDados);
         const wb = XLSX.utils.book_new();
-        
-        // Função auxiliar para formatar os dados em letra maiúscula e adicionar bordas nas células
-        function criarPlanilhaFormatada(dados) {
-            // Converte todos os campos de texto/string para LETRAS MAIÚSCULAS
-            const dadosUppercase = dados.map(item => {
-                const novoItem = {};
-                for (let chave in item) {
-                    let valor = item[chave];
-                    if (typeof valor === 'string') {
-                        valor = valor.toUpperCase();
-                    }
-                    novoItem[chave.toUpperCase()] = valor;
-                }
-                return novoItem;
-            });
-
-            const ws = XLSX.utils.json_to_sheet(dadosUppercase);
-            
-            // Adiciona bordas em todas as células preenchidas da planilha
-            const range = XLSX.utils.decode_range(ws['!ref'] || "A1");
-            const bordaFina = {
-                top: { style: "thin", color: { rgb: "000000" } },
-                bottom: { style: "thin", color: { rgb: "000000" } },
-                left: { style: "thin", color: { rgb: "000000" } },
-                right: { style: "thin", color: { rgb: "000000" } }
-            };
-
-            for (let R = range.s.r; R <= range.e.r; ++R) {
-                for (let C = range.s.c; C <= range.e.c; ++C) {
-                    const cellAddress = XLSX.utils.encode_cell({r: R, c: C});
-                    if (!ws[cellAddress]) ws[cellAddress] = { t: 's', v: '' };
-                    if (!ws[cellAddress].s) ws[cellAddress].s = {};
-                    ws[cellAddress].s.border = bordaFina;
-                    
-                    // Destaca o cabeçalho em negrito
-                    if (R === 0) {
-                        ws[cellAddress].s.font = { bold: true };
-                        ws[cellAddress].s.fill = { fgColor: { rgb: "E0E0E0" } };
-                    }
-                }
-            }
-            return ws;
-        }
-
-        if (bancoDados.length > 0) {
-            XLSX.utils.book_append_sheet(wb, criarPlanilhaFormatada(bancoDados), "MÁQUINAS");
-        }
-        if (bancoMesas.length > 0) {
-            XLSX.utils.book_append_sheet(wb, criarPlanilhaFormatada(bancoMesas), "MESAS");
-        }
-        if (bancoMotores.length > 0) {
-            XLSX.utils.book_append_sheet(wb, criarPlanilhaFormatada(bancoMotores), "MOTORES");
-        }
-        if (bancoAcessorios.length > 0) {
-            XLSX.utils.book_append_sheet(wb, criarPlanilhaFormatada(bancoAcessorios), "ACESSÓRIOS");
-        }
-
-        XLSX.writeFile(wb, `BACKUP_SISTEMA_CARGA_${new Date().toISOString().slice(0, 10)}.xlsx`);
+        XLSX.utils.book_append_sheet(wb, ws, "Base de Dados");
+        XLSX.writeFile(wb, "backup_maquinas.xlsx");
     }
 
     window.onload = function() {
         carregarDadosDrive();
-    }
+    };
 </script>
 </body>
 </html>
